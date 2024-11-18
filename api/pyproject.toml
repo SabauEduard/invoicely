@@ -7,10 +7,12 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-fastapi = "\b"
+fastapi = "^0.115.5"
 uvicorn = "^0.32.0"
 starlette = "^0.41.3"
 pydantic = "^2.9.2"
+sqlalchemy = "^2.0.36"
+python-dotenv = "^1.0.1"
 
 
 [build-system]
