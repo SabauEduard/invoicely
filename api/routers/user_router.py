@@ -3,57 +3,74 @@ from typing import List
 from fastapi import APIRouter, Body
 from starlette import status
 
-from models.user import User, UserCreate
+from dtos.user_dtos import UserDTO, UserCreateDTO
 from services.user_service import UserService
 
-asset_router = APIRouter()
+user_router = APIRouter()
 
 
-@asset_router.get(
+@user_router.get(
     "/",
-    response_model=List[User],
+    response_model=List[UserDTO],
     response_model_by_alias=False,
     responses={
         200: {"description": "Users retrieved successfully"},
     }
 )
-async def get_assets():
+async def get_users():
     return await UserService.get_all()
 
 
-@asset_router.get(
-    "/{asset_id}",
+@user_router.get(
+    "/{user_id}",
     response_model_by_alias=False,
-    response_model=User,
+    response_model=UserDTO,
     responses={
         404: {"description": "User not found"},
         200: {"description": "User retrieved successfully"},
     }
 )
-async def get_asset(user_id: str):
+async def get_user(user_id: str):
     return await UserService.get_by_id(user_id)
 
 
-@asset_router.get(
-    "/pre-signed-url/{asset_id}",
+@user_router.post(
+    "/",
+    response_model=UserDTO,
+    status_code=status.HTTP_201_CREATED,
     response_model_by_alias=False,
-    response_model=str,
     responses={
-        404: {"description": "Asset not found"},
-        200: {"description": "Pre-signed URL retrieved successfully"},
+        400: {"description": "User already exists"},
+        201: {"description": "User created successfully"},
     }
 )
-async def get_pre_signed_url(asset_id: str):
-    return await AssetService.get_pre_signed_url(asset_id)
+async def create_user(user_create_dto: UserCreateDTO):
+    return await UserService.create_user(user_create_dto)
 
 
-@asset_router.get(
-    "/by-owner/{owner_id}",
-    response_model_by_alias=False,
-    response_model=List[Asset],
+@user_router.delete(
+    "/{user_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
     responses={
-        200: {"description": "Assets retrieved successfully"},
-    }
+        404: {"description": "User not found"},
+        204: {"description": "User deleted successfully"},
+    },
 )
-async def get_assets_of_owner(owner_id: str):
-    return await AssetService.get_by_owner_id(owner_id)
+async def delete_user(user_id: str):
+    await UserService.delete_by_id(user_id)
+    return
+
+
+@user_router.put(
+    "/{user_id}",
+    response_model=UserDTO,
+    response_model_by_alias=False,
+    status_code=status.HTTP_204_NO_CONTENT,
+    responses={
+        404: {"description": "User not found"},
+        201: {"description": "User updated successfully"},
+    },
+)
+async def update_user(user_id: str, user_update_dto: UserCreateDTO):
+    await UserService.update_user(user_id, user_update_dto)
+    
