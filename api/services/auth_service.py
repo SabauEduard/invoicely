@@ -1,4 +1,3 @@
-from database import db_dependency
 from typing import Annotated
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi import Depends, HTTPException, Response, Cookie
@@ -10,11 +9,7 @@ import jwt
 import json
 from jose import JWTError
 from starlette import status
-
-
-class Token:
-    access_token: str
-    token_type: str
+from dtos.token_dtos import TokenDTO
 
 
 class AuthService:
@@ -87,7 +82,7 @@ class AuthService:
             expires=timedelta(minutes=15),
         )
 
-        return Token(access_token=token, token_type="bearer")
+        return TokenDTO(access_token=token, token_type="bearer")
 
     @staticmethod
     async def verify_refresh_token(response, refresh_token: str = Cookie(None)):
@@ -121,16 +116,8 @@ class AuthService:
                 expires=timedelta(minutes=15),
             )
 
-            return Token(access_token=token, token_type="bearer")
+            return TokenDTO(access_token=token, token_type="bearer")
         except JWTError as e:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
             )
-
-    @staticmethod
-    async def logout(response: Response):
-        """
-        Logout user
-        """
-        response.delete_cookie("auth_cookie")
-        return {"message": "Logout successful"}

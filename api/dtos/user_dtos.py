@@ -1,6 +1,9 @@
-from pydantic import constr, conint
+from typing import Optional
+
+from pydantic import constr, conint, BaseModel
 from datetime import datetime
 from models.user import User
+
 
 class UserCreateDTO(BaseModel):
     email: constr(regex=r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
