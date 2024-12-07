@@ -30,7 +30,7 @@ class UserService:
         return await UserRepository.get_all()
 
     @staticmethod
-    async def get_by_id(user_id: str) -> UserDTO:
+    async def get_by_id(user_id: int) -> UserDTO:
         '''
         Get a usser by id
         '''
@@ -40,7 +40,7 @@ class UserService:
         return user
 
     @staticmethod
-    async def update_user(user_id: str, user_create_dto: UserCreateDTO) -> UserDTO:
+    async def update_user(user_id: int, user_create_dto: UserCreateDTO) -> UserDTO:
         '''
         Update a user
         '''
@@ -53,7 +53,7 @@ class UserService:
         return await UserRepository.update(user_id, user_create_dto)
 
     @staticmethod
-    async def delete_user(user_id: str) -> None:
+    async def delete_user(user_id: int) -> None:
         '''
         Delete a user
         '''

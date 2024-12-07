@@ -3,14 +3,13 @@ from dtos.user_dtos import UserDTO, UserCreateDTO
 from typing import Annotated, Optional, List
 from database import db_dependency
 
-    
 
 class UserRepository:
     '''
     Repository for Users.
     '''
     @staticmethod
-    async def create(user_create_dto: UserCreateDTO, db: db_dependency) -> UserDTO:
+    async def create(user_create_dto: UserCreateDTO, db=db_dependency) -> UserDTO:
         '''
         Create a user.
         '''
@@ -22,7 +21,7 @@ class UserRepository:
         return UserDTO.from_user(new_user)
         
     @staticmethod
-    def get_all(db: db_dependency) -> List[UserDTO]:
+    def get_all(db=db_dependency) -> List[UserDTO]:
         '''
         Get all users.
         '''
@@ -30,7 +29,7 @@ class UserRepository:
         return [UserDTO.from_user(user) for user in users]
 
     @staticmethod
-    def get_user_by_email(email: str, db: db_dependency) -> Optional[User]:
+    def get_by_email(email: str, db=db_dependency) -> Optional[User]:
         '''
         Get a user by email.
         '''
@@ -38,7 +37,7 @@ class UserRepository:
         return UserDTO.from_user(user)
     
     @staticmethod
-    def get_user_by_id(user_id: int, db: db_dependency) -> Optional[UserDTO]:
+    def get_by_id(user_id: int, db=db_dependency) -> Optional[UserDTO]:
         '''
         Get a user by id.
         '''
@@ -46,7 +45,7 @@ class UserRepository:
         return UserDTO.from_user(user)
 
     @staticmethod
-    def delete_by_id(user_id: int, db: db_dependency) -> None:
+    def delete_by_id(user_id: int, db=db_dependency) -> None:
         '''
         Delete a user by id.
         '''
@@ -55,7 +54,7 @@ class UserRepository:
         db.commit()
 
     @staticmethod
-    def update(user_id: int, user_create_dto: UserCreateDTO, db: db_dependency) -> UserDTO:
+    def update(user_id: int, user_create_dto: UserCreateDTO, db=db_dependency) -> UserDTO:
         '''
         Update a user.
         '''

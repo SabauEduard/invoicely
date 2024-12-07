@@ -16,7 +16,7 @@ poetry add <package-name>
 ```
 docker compose up -d
 poetry shell
-uvicorn main:app --reload
+uvicorn main:app --reload --port 8000
 ```
 
 # Migrations

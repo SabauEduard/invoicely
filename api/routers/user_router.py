@@ -45,7 +45,7 @@ async def get_user(user_id: str):
     }
 )
 async def create_user(user_create_dto: UserCreateDTO):
-    return await UserService.create_user(user_create_dto)
+    return await UserService.create(user_create_dto)
 
 
 @user_router.delete(
@@ -57,7 +57,7 @@ async def create_user(user_create_dto: UserCreateDTO):
     },
 )
 async def delete_user(user_id: str):
-    await UserService.delete_by_id(user_id)
+    await UserService.delete_user(user_id)
     return
 
 
@@ -65,7 +65,6 @@ async def delete_user(user_id: str):
     "/{user_id}",
     response_model=UserDTO,
     response_model_by_alias=False,
-    status_code=status.HTTP_204_NO_CONTENT,
     responses={
         404: {"description": "User not found"},
         201: {"description": "User updated successfully"},
@@ -73,4 +72,3 @@ async def delete_user(user_id: str):
 )
 async def update_user(user_id: str, user_update_dto: UserCreateDTO):
     await UserService.update_user(user_id, user_update_dto)
-    
