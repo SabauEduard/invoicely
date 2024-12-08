@@ -1,13 +1,13 @@
 from typing import Annotated
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import Depends, HTTPException, Response, Cookie
+
 from repositories.user_repository import UserRepository
 from passlib.context import CryptContext
 from datetime import datetime, timedelta, timezone
 from config import settings
 import jwt
 import json
-from jose import JWTError
 from starlette import status
 from dtos.token_dtos import TokenDTO
 
@@ -42,9 +42,9 @@ class AuthService:
                     status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
                 )
 
-            return UserRepository.get_user_by_email(email)
+            return UserRepository.get_by_email(email)
 
-        except JWTError as e:
+        except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
             )
@@ -61,7 +61,7 @@ class AuthService:
     async def login(
         response: Response, form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
     ):
-        user = await UserRepository.get_user_by_email(form_data.email)
+        user = await UserRepository.get_by_email(form_data.username)
 
         if not user:
             raise HTTPException(status_code=401, detail="Invalid credentials")
@@ -117,7 +117,7 @@ class AuthService:
             )
 
             return TokenDTO(access_token=token, token_type="bearer")
-        except JWTError as e:
+        except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
             )

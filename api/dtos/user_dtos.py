@@ -1,15 +1,15 @@
 from typing import Optional
 
-from pydantic import constr, conint, BaseModel, Field
+from pydantic import BaseModel, Field
 from datetime import datetime
 from models.user import User
 
 
 class UserCreateDTO(BaseModel):
-    email: str = Field(..., pattern=r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
-    first_name: str = Field(..., min_length=2, max_length=50)
-    last_name: str = Field(..., min_length=2, max_length=50)
-    password: str = Field(..., min_length=8)
+    email: str = Field(..., pattern=r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', example="something@gmail.com")
+    first_name: str = Field(..., min_length=2, max_length=50, example="John")
+    last_name: str = Field(..., min_length=2, max_length=50, example="Doe")
+    password: str = Field(..., min_length=8, max_length=50, example="password123")
     role_id: int = Field(..., ge=1)
 
     def to_user(self):
@@ -24,7 +24,7 @@ class UserCreateDTO(BaseModel):
 
 class UserDTO(BaseModel):
     id: int = Field(..., ge=1)
-    email: str = Field(..., pattern=r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$')
+    email: str = Field(..., pattern=r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', example="something@gmail.com")
     first_name: str = Field(..., min_length=2, max_length=50)
     last_name: str = Field(..., min_length=2, max_length=50)
     role_id: int = Field(..., ge=1)

@@ -1,6 +1,4 @@
-from typing import List
-
-from fastapi import APIRouter, Body
+from fastapi import APIRouter, Body, Depends
 from fastapi.openapi.models import Response
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette import status
@@ -9,6 +7,7 @@ from dtos.token_dtos import TokenDTO
 from services.auth_service import AuthService
 
 auth_router = APIRouter()
+
 
 @auth_router.post(
     "/login",
@@ -19,9 +18,10 @@ auth_router = APIRouter()
         200: {"description": "User logged in successfully"},
     }
 )
-async def login(form_data: OAuth2PasswordRequestForm = Body(...)):
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     response = Response()
     return await AuthService.login(response, form_data)
+
 
 @auth_router.post(
     "/refresh",
@@ -34,6 +34,7 @@ async def login(form_data: OAuth2PasswordRequestForm = Body(...)):
 )
 async def refresh_token(response: Response, refresh_token: str = Body(...)):
     return await AuthService.verify_refresh_token(response, refresh_token)
+
 
 @auth_router.post(
     "/logout",

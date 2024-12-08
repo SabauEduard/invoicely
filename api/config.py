@@ -13,3 +13,4 @@ def settings():
 
 class Settings(BaseSettings):
     mysql_url: str
+    secret_key: str

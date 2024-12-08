@@ -1,6 +1,13 @@
+import signal
+
+import os
+
+import fastapi
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from routers.auth_router import auth_router
+from routers.role_router import role_router
 from routers.user_router import user_router
 
 
@@ -24,7 +31,21 @@ app.add_middleware(
 )
 
 app.include_router(user_router, prefix="/users")
+app.include_router(auth_router, prefix="/auth")
+app.include_router(role_router, prefix="/roles")
+
 
 @app.get("/")
 async def read_root():
     return {"Hello": "World"}
+
+
+@app.get("/shutdown")
+async def shutdown():
+    os.kill(os.getpid(), signal.SIGTERM)
+    return fastapi.Response(status_code=200, content='Server shutting down...')
+
+
+@app.get("/health")
+async def health():
+    return fastapi.Response(status_code=200, content='OK')

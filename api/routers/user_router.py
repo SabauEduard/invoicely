@@ -1,8 +1,10 @@
 from typing import List
 
-from fastapi import APIRouter, Body
+from fastapi import APIRouter, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
+from database import get_db
 from dtos.user_dtos import UserDTO, UserCreateDTO
 from services.user_service import UserService
 
@@ -17,8 +19,8 @@ user_router = APIRouter()
         200: {"description": "Users retrieved successfully"},
     }
 )
-async def get_users():
-    return await UserService.get_all()
+async def get_users(db: AsyncSession = Depends(get_db)):
+    return await UserService.get_all(db)
 
 
 @user_router.get(
@@ -30,8 +32,8 @@ async def get_users():
         200: {"description": "User retrieved successfully"},
     }
 )
-async def get_user(user_id: str):
-    return await UserService.get_by_id(user_id)
+async def get_user(user_id: int, db: AsyncSession = Depends(get_db)):
+    return await UserService.get_by_id(user_id, db)
 
 
 @user_router.post(
@@ -44,8 +46,8 @@ async def get_user(user_id: str):
         201: {"description": "User created successfully"},
     }
 )
-async def create_user(user_create_dto: UserCreateDTO):
-    return await UserService.create(user_create_dto)
+async def create_user(user_create_dto: UserCreateDTO, db: AsyncSession = Depends(get_db)):
+    return await UserService.create(user_create_dto, db)
 
 
 @user_router.delete(
@@ -56,8 +58,8 @@ async def create_user(user_create_dto: UserCreateDTO):
         204: {"description": "User deleted successfully"},
     },
 )
-async def delete_user(user_id: str):
-    await UserService.delete_user(user_id)
+async def delete_user(user_id: int, db: AsyncSession = Depends(get_db)):
+    await UserService.delete_user(user_id, db)
     return
 
 
@@ -70,5 +72,5 @@ async def delete_user(user_id: str):
         201: {"description": "User updated successfully"},
     },
 )
-async def update_user(user_id: str, user_update_dto: UserCreateDTO):
-    await UserService.update_user(user_id, user_update_dto)
+async def update_user(user_id: int, user_update_dto: UserCreateDTO, db: AsyncSession = Depends(get_db)):
+    await UserService.update_user(user_id, user_update_dto, db)

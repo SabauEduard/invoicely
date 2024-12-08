@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, DateTime, func
+from sqlalchemy import Column, String, Integer
 from sqlalchemy.orm import relationship
 from database import Base
 
@@ -11,4 +11,3 @@ class Role(Base):
     name = Column(String(50), nullable=False)
     
     users = relationship("User", back_populates="role")
-    

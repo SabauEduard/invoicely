@@ -1,7 +1,8 @@
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from models.user import User
 from dtos.user_dtos import UserDTO, UserCreateDTO
-from typing import Annotated, Optional, List
-from database import db_dependency
+from typing import Optional, List
 
 
 class UserRepository:
@@ -9,7 +10,7 @@ class UserRepository:
     Repository for Users.
     '''
     @staticmethod
-    async def create(user_create_dto: UserCreateDTO, db=db_dependency) -> UserDTO:
+    async def create(user_create_dto: UserCreateDTO, db: AsyncSession) -> UserDTO:
         '''
         Create a user.
         '''
@@ -21,7 +22,7 @@ class UserRepository:
         return UserDTO.from_user(new_user)
         
     @staticmethod
-    def get_all(db=db_dependency) -> List[UserDTO]:
+    async def get_all(db: AsyncSession) -> List[UserDTO]:
         '''
         Get all users.
         '''
@@ -29,7 +30,7 @@ class UserRepository:
         return [UserDTO.from_user(user) for user in users]
 
     @staticmethod
-    def get_by_email(email: str, db=db_dependency) -> Optional[User]:
+    async def get_by_email(email: str, db: AsyncSession) -> Optional[User]:
         '''
         Get a user by email.
         '''
@@ -37,7 +38,7 @@ class UserRepository:
         return UserDTO.from_user(user)
     
     @staticmethod
-    def get_by_id(user_id: int, db=db_dependency) -> Optional[UserDTO]:
+    async def get_by_id(user_id: int, db: AsyncSession) -> Optional[UserDTO]:
         '''
         Get a user by id.
         '''
@@ -45,7 +46,7 @@ class UserRepository:
         return UserDTO.from_user(user)
 
     @staticmethod
-    def delete_by_id(user_id: int, db=db_dependency) -> None:
+    async def delete_by_id(user_id: int, db: AsyncSession) -> None:
         '''
         Delete a user by id.
         '''
@@ -54,7 +55,7 @@ class UserRepository:
         db.commit()
 
     @staticmethod
-    def update(user_id: int, user_create_dto: UserCreateDTO, db=db_dependency) -> UserDTO:
+    async def update(user_id: int, user_create_dto: UserCreateDTO, db: AsyncSession) -> UserDTO:
         '''
         Update a user.
         '''
