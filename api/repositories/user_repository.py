@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-
+from sqlalchemy.future import select
 from models.user import User
 from dtos.user_dtos import UserDTO, UserCreateDTO
 from typing import Optional, List
@@ -9,6 +9,7 @@ class UserRepository:
     '''
     Repository for Users.
     '''
+
     @staticmethod
     async def create(user_create_dto: UserCreateDTO, db: AsyncSession) -> UserDTO:
         '''
@@ -16,33 +17,36 @@ class UserRepository:
         '''
         new_user = user_create_dto.to_user()
         db.add(new_user)
-        db.commit()
-        db.refresh(new_user)
-        
+        await db.commit()
+        await db.refresh(new_user)
+
         return UserDTO.from_user(new_user)
-        
+
     @staticmethod
     async def get_all(db: AsyncSession) -> List[UserDTO]:
         '''
         Get all users.
         '''
-        users = db.query(User).all()  # Get all users from the database
+        result = await db.execute(select(User))
+        users = result.scalars().all()
         return [UserDTO.from_user(user) for user in users]
 
     @staticmethod
-    async def get_by_email(email: str, db: AsyncSession) -> Optional[User]:
+    async def get_by_email(email: str, db: AsyncSession) -> Optional[UserDTO]:
         '''
         Get a user by email.
         '''
-        user = db.query(User).filter(User.email == email).first()
+        result = await db.execute(select(User).filter(User.email == email))
+        user = result.scalars().first()
         return UserDTO.from_user(user)
-    
+
     @staticmethod
     async def get_by_id(user_id: int, db: AsyncSession) -> Optional[UserDTO]:
         '''
         Get a user by id.
         '''
-        user = db.query(User).filter(User.id == user_id).first()
+        result = await db.execute(select(User).filter(User.id == user_id))
+        user = result.scalars().first()
         return UserDTO.from_user(user)
 
     @staticmethod
@@ -50,21 +54,23 @@ class UserRepository:
         '''
         Delete a user by id.
         '''
-        user = db.query(User).filter(User.id == user_id).first()
-        db.delete(user)
-        db.commit()
+        result = await db.execute(select(User).filter(User.id == user_id))
+        user = result.scalars().first()
+        await db.delete(user)
+        await db.commit()
 
     @staticmethod
     async def update(user_id: int, user_create_dto: UserCreateDTO, db: AsyncSession) -> UserDTO:
         '''
         Update a user.
         '''
-        user = db.query(User).filter(User.id == user_id).first()
+        result = await db.execute(select(User).filter(User.id == user_id))
+        user = result.scalars().first()
         user.email = user_create_dto.email
         user.password = user_create_dto.password
         user.first_name = user_create_dto.first_name
         user.last_name = user_create_dto.last_name
         user.role_id = user_create_dto.role_id
-        db.commit()
-        db.refresh(user)
+        await db.commit()
+        await db.refresh(user)
         return UserDTO.from_user(user)

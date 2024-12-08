@@ -17,11 +17,11 @@ class AuthService:
     bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
     @staticmethod
-    def verify_password(plain_password, hashed_password):
+    async def verify_password(plain_password, hashed_password):
         return AuthService.bcrypt_context.verify(plain_password, hashed_password)
 
     @staticmethod
-    def get_current_user(auth_cookie: str = Cookie(None)):
+    async def get_current_user(auth_cookie: str = Cookie(None)):
         if auth_cookie is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated"
@@ -50,7 +50,7 @@ class AuthService:
             )
 
     @staticmethod
-    def create_access_token(email, expires_delta=timedelta(minutes=15)):
+    async def create_access_token(email, expires_delta=timedelta(minutes=15)):
         encode = {
             "sub": email,
             "exp": datetime.now(timezone.utc) + expires_delta,
@@ -80,6 +80,7 @@ class AuthService:
             json.dumps(secret_data),
             httponly=True,
             expires=timedelta(minutes=15),
+            secure=True
         )
 
         return TokenDTO(access_token=token, token_type="bearer")
