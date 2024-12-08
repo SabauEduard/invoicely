@@ -1,6 +1,7 @@
 from typing import Annotated
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi import Depends, HTTPException, Response, Cookie
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from repositories.user_repository import UserRepository
 from passlib.context import CryptContext
@@ -21,7 +22,7 @@ class AuthService:
         return AuthService.bcrypt_context.verify(plain_password, hashed_password)
 
     @staticmethod
-    async def get_current_user(auth_cookie: str = Cookie(None)):
+    async def get_current_user(db: AsyncSession, auth_cookie: str):
         if auth_cookie is None:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Not authenticated"
@@ -42,7 +43,7 @@ class AuthService:
                     status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
                 )
 
-            return UserRepository.get_by_email(email)
+            return UserRepository.get_by_email(email, db)
 
         except Exception as e:
             raise HTTPException(
@@ -59,18 +60,20 @@ class AuthService:
 
     @staticmethod
     async def login(
-        response: Response, form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
+        db: AsyncSession,
+        response: Response,
+        form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
     ):
-        user = await UserRepository.get_by_email(form_data.username)
+        password = await UserRepository.get_password_by_email(form_data.username, db)
 
-        if not user:
+        if not password:
             raise HTTPException(status_code=401, detail="Invalid credentials")
-        if not AuthService.verify_password(form_data.password, user.password):
+        if not AuthService.verify_password(form_data.password, password):
             raise HTTPException(status_code=401, detail="Invalid credentials")
 
-        token = await AuthService.create_access_token(user)
+        token = await AuthService.create_access_token(form_data.username)
         refresh_token = await AuthService.create_access_token(
-            user.email, timedelta(hours=1)
+            form_data.username, timedelta(hours=1)
         )
 
         secret_data = {"access_token": token, "refresh_token": refresh_token}
@@ -86,7 +89,7 @@ class AuthService:
         return TokenDTO(access_token=token, token_type="bearer")
 
     @staticmethod
-    async def verify_refresh_token(response, refresh_token: str = Cookie(None)):
+    async def verify_refresh_token(db: AsyncSession, response, refresh_token: str = Cookie(None)):
         try:
             auth_cookie_dict = json.loads(refresh_token)
             payload = jwt.decode(

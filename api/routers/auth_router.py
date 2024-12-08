@@ -1,11 +1,14 @@
-from fastapi import APIRouter, Body, Depends, Response
+from fastapi import APIRouter, Body, Depends, Response, Cookie
 from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
+from database import get_db
 from dtos.token_dtos import TokenDTO
+from dtos.user_dtos import UserDTO
 from services.auth_service import AuthService
 
-auth_router = APIRouter(prefix="/auth", tags=["Authentication"])
+auth_router = APIRouter(tags=["Authentication"])
 
 
 @auth_router.post(
@@ -26,8 +29,9 @@ auth_router = APIRouter(prefix="/auth", tags=["Authentication"])
 async def login(
     response: Response,
     form_data: OAuth2PasswordRequestForm = Depends(),
+    db: AsyncSession = Depends(get_db)
 ):
-    return await AuthService.login(response, form_data)
+    return await AuthService.login(db, response, form_data)
 
 
 @auth_router.post(
@@ -48,8 +52,9 @@ async def login(
 async def refresh_token(
     response: Response,
     refresh_token: str = Body(..., embed=True),
+    db: AsyncSession = Depends(get_db)
 ):
-    return await AuthService.verify_refresh_token(response, refresh_token)
+    return await AuthService.verify_refresh_token(db, response, refresh_token)
 
 
 @auth_router.post(
@@ -60,3 +65,15 @@ async def refresh_token(
 async def logout(response: Response):
     response.delete_cookie("auth_cookie", httponly=True, secure=True)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@auth_router.get(
+    "/current-user",
+    response_model=UserDTO,
+    response_model_by_alias=False,
+    responses={
+        201: {"description": "User retrieved successfully"},
+    }
+)
+async def get_current_user(db: AsyncSession = Depends(get_db), auth_cookie: str = Cookie(None)):
+    return await AuthService.get_current_user(db, auth_cookie)

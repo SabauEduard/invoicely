@@ -8,7 +8,7 @@ from database import get_db
 from dtos.role_dtos import RoleDTO, RoleCreateDTO
 from services.role_service import RoleService
 
-role_router = APIRouter()
+role_router = APIRouter(tags=["Roles"])
 
 
 @role_router.get(

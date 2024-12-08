@@ -8,7 +8,7 @@ from database import get_db
 from dtos.user_dtos import UserDTO, UserCreateDTO
 from services.user_service import UserService
 
-user_router = APIRouter()
+user_router = APIRouter(tags=["Users"])
 
 
 @user_router.get(

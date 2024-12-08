@@ -10,6 +10,15 @@ class UserRepository:
     Repository for Users.
     '''
 
+
+    @staticmethod
+    async def get_password_by_email(email: str, db: AsyncSession) -> Optional[str]:
+        '''
+        Get a user's password by email.
+        '''
+        result = await db.execute(select(User.password).filter(User.email == email))
+        return result.scalars().first()
+
     @staticmethod
     async def create(user_create_dto: UserCreateDTO, db: AsyncSession) -> UserDTO:
         '''
