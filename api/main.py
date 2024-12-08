@@ -31,7 +31,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(user_router, prefix="/users", dependencies=[Depends(get_current_user)])
+app.include_router(user_router, prefix="/users")
 app.include_router(auth_router, prefix="/auth")
 app.include_router(role_router, prefix="/roles", dependencies=[Depends(get_current_user)])
 
