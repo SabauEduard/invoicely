@@ -3,10 +3,11 @@ import signal
 import os
 
 import fastapi
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordBearer
 
-from routers.auth_router import auth_router
+from routers.auth_router import auth_router, get_current_user
 from routers.role_router import role_router
 from routers.user_router import user_router
 
@@ -30,9 +31,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(user_router, prefix="/users")
+app.include_router(user_router, prefix="/users", dependencies=[Depends(get_current_user)])
 app.include_router(auth_router, prefix="/auth")
-app.include_router(role_router, prefix="/roles")
+app.include_router(role_router, prefix="/roles", dependencies=[Depends(get_current_user)])
 
 
 @app.get("/")
@@ -49,3 +50,14 @@ async def shutdown():
 @app.get("/health")
 async def health():
     return fastapi.Response(status_code=200, content='OK')
+
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+openapi_schema = app.openapi()
+openapi_schema["components"]["securitySchemes"] = {
+    "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+    }
+}
