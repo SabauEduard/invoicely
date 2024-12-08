@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from config import settings
 
-engine = create_async_engine(settings().mysql_url)
+engine = create_async_engine(settings().mysql_url, echo=True)
 
 SessionLocal = sessionmaker(
     bind=engine,
@@ -16,7 +16,6 @@ SessionLocal = sessionmaker(
 )
 
 
-@asynccontextmanager
 async def get_db():
     async with SessionLocal() as db:
         try:
