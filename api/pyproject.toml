@@ -2,7 +2,7 @@
 name = "api"
 version = "0.1.0"
 description = ""
-authors = ["Your Name <you@example.com>"]
+authors = ["Eduard Sabau, Clem Daria"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -21,6 +21,8 @@ pyjwt = "^2.10.1"
 passlib = "^1.7.4"
 python-multipart = "^0.0.19"
 asyncmy = "^0.2.9"
+pyotp = "^2.9.0"
+qrcode = {extras = ["pil"], version = "^8.0"}
 
 
 [build-system]

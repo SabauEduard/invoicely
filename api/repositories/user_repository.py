@@ -9,7 +9,37 @@ class UserRepository:
     '''
     Repository for Users.
     '''
+    @staticmethod
+    async def enable_2fa(user_id: int, otp_secret: str, db: AsyncSession) -> bool:
+        '''
+        Enable 2FA for a user.
+        '''
+        result = await db.execute(select(User).filter(User.id == user_id))
+        user = result.scalars().first()
+        user.is_2fa_enabled = True
+        user.otp_secret = otp_secret
+        await db.commit()
+        return UserDTO.from_user(user)
 
+    @staticmethod
+    async def disable_2fa(user_id: int, db: AsyncSession) -> bool:
+        '''
+        Disable 2FA for a user.
+        '''
+        result = await db.execute(select(User).filter(User.id == user_id))
+        user = result.scalars().first()
+        user.is_2fa_enabled = False
+        user.otp_secret = None
+        await db.commit()
+        return UserDTO.from_user(user)
+
+    @staticmethod
+    async def get_otp_code_by_id(user_id: int, db: AsyncSession) -> Optional[str]:
+        '''
+        Get a user's OTP code by id.
+        '''
+        result = await db.execute(select(User.otp_secret).filter(User.id == user_id))
+        return result.scalars().first()
 
     @staticmethod
     async def get_password_by_email(email: str, db: AsyncSession) -> Optional[str]:

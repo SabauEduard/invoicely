@@ -29,9 +29,35 @@ auth_router = APIRouter(tags=["Authentication"])
 async def login(
     response: Response,
     form_data: OAuth2PasswordRequestForm = Depends(),
+    otp: str = Body(None),
     db: AsyncSession = Depends(get_db)
 ):
-    return await AuthService.login(db, response, form_data)
+    user = await AuthService.login(db, response, form_data)
+    await AuthService.verify_2fa(db, user.id, otp)
+    return user
+
+
+@auth_router.post(
+    "/enable-2fa",
+    response_model=dict,
+    responses={
+        200: {"description": "2FA enabled successfully"},
+        400: {"description": "User not found"},
+    },
+)
+async def enable_2fa(user_id: int, db: AsyncSession = Depends(get_db)):
+    return await AuthService.enable_2fa(db, user_id)
+
+@auth_router.post(
+    "/disable-2fa",
+    response_model=dict,
+    responses={
+        200: {"description": "2FA disabled successfully"},
+        400: {"description": "User not found"},
+    },
+)
+async def disable_2fa(user_id: int, db: AsyncSession = Depends(get_db)):
+    return await AuthService.disable_2fa(db, user_id)
 
 
 @auth_router.post(
