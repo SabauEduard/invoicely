@@ -32,9 +32,7 @@ async def login(
     otp: str = Body(None),
     db: AsyncSession = Depends(get_db)
 ):
-    user = await AuthService.login(db, response, form_data)
-    await AuthService.verify_2fa(db, user.id, otp)
-    return user
+    return await AuthService.login(db, response, form_data, otp)
 
 
 @auth_router.post(

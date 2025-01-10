@@ -63,14 +63,18 @@ class AuthService:
     async def login(
         db: AsyncSession,
         response: Response,
-        form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
+        form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+        otp: str = None,
     ):
         password = await UserRepository.get_password_by_email(form_data.username, db)
+        user = await UserRepository.get_by_email(form_data.username, db)
 
         if not password:
             raise HTTPException(status_code=401, detail="Invalid credentials")
         if not AuthService.verify_password(form_data.password, password):
             raise HTTPException(status_code=401, detail="Invalid credentials")
+        if user.is_2fa_enabled:
+            await AuthService.verify_2fa(db, user.id, otp)
 
         token = await AuthService.create_access_token(form_data.username)
         refresh_token = await AuthService.create_access_token(
@@ -152,11 +156,8 @@ class AuthService:
 
     @staticmethod
     async def verify_2fa(db: AsyncSession, user_id: int, otp: str):
-        user = await UserRepository.get_by_id(user_id, db)
-        if not user:
-            raise HTTPException(status_code=400, detail="User not found")
-        if not user.is_2fa_enabled:
-            raise HTTPException(status_code=400, detail="2FA not enabled")
+        if not otp:
+            raise HTTPException(status_code=400, detail="OTP is required")
         secret_otp = UserRepository.get_otp_code_by_id(user_id, db)
         if verify_otp(secret_otp, otp):
             return {"message": "2FA verified"}

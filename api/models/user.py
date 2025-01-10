@@ -14,7 +14,7 @@ class User(Base):
     password = Column(String(100), nullable=False)
 
     is_2fa_enabled = Column(Boolean, default=False)
-    otp_secret = Column(String(16), nullable=True)
+    otp_secret = Column(String(100), nullable=True)
     
     role_id = Column(Integer, ForeignKey('roles.id'), nullable=False)
 
