@@ -11,6 +11,7 @@ import jwt
 import json
 from starlette import status
 from dtos.token_dtos import TokenDTO
+from services.otp_service import generate_otp_secret, get_totp_uri, generate_qr_code, verify_otp
 
 
 class AuthService:
@@ -62,14 +63,18 @@ class AuthService:
     async def login(
         db: AsyncSession,
         response: Response,
-        form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
+        form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+        otp: str = None,
     ):
         password = await UserRepository.get_password_by_email(form_data.username, db)
+        user = await UserRepository.get_by_email(form_data.username, db)
 
         if not password:
             raise HTTPException(status_code=401, detail="Invalid credentials")
         if not AuthService.verify_password(form_data.password, password):
             raise HTTPException(status_code=401, detail="Invalid credentials")
+        if user.is_2fa_enabled:
+            await AuthService.verify_2fa(db, user.id, otp)
 
         token = await AuthService.create_access_token(form_data.username)
         refresh_token = await AuthService.create_access_token(
@@ -125,3 +130,36 @@ class AuthService:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
             )
+
+    @staticmethod
+    async def enable_2fa(db: AsyncSession, user_id: int):
+        user = await UserRepository.get_by_id(user_id, db)
+        if not user:
+            raise HTTPException(status_code=400, detail="User not found")
+        if user.is_2fa_enabled:
+            return {"message": "2FA already enabled"}
+        otp_secret=generate_otp_secret()
+        await UserRepository.enable_2fa(user_id, otp_secret, db)
+        uri = get_totp_uri(user.email, otp_secret)
+        qr_code = generate_qr_code(uri)
+        return {"otp_secret": otp_secret, "qr_code": qr_code}
+
+    @staticmethod
+    async def disable_2fa(db: AsyncSession, user_id: int):
+        user = await UserRepository.get_by_id(user_id, db)
+        if not user:
+            raise HTTPException(status_code=400, detail="User not found")
+        if not user.is_2fa_enabled:
+            return {"message": "2FA already disabled"}
+        await UserRepository.disable_2fa(user_id, db)
+        return {"message": "2FA disabled successfully"}
+
+    @staticmethod
+    async def verify_2fa(db: AsyncSession, user_id: int, otp: str):
+        if not otp:
+            raise HTTPException(status_code=400, detail="OTP is required")
+        secret_otp = UserRepository.get_otp_code_by_id(user_id, db)
+        if verify_otp(secret_otp, otp):
+            return {"message": "2FA verified"}
+        else:
+            raise HTTPException(status_code=400, detail="Invalid OTP")

@@ -19,7 +19,7 @@ config = context.config
 fileConfig(config.config_file_name)
 
 # Set the sqlalchemy.url from the .env file
-config.set_main_option('sqlalchemy.url', os.getenv('MYSQL_URL'))
+config.set_main_option('sqlalchemy.url', os.getenv('MYSQL_URL_ALEMBIC'))
 
 # add your model's MetaData object here
 # for 'autogenerate' support

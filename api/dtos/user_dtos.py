@@ -27,6 +27,7 @@ class UserDTO(BaseModel):
     email: str = Field(..., pattern=r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$', example="something@gmail.com")
     first_name: str = Field(..., min_length=2, max_length=50)
     last_name: str = Field(..., min_length=2, max_length=50)
+    is_2fa_enabled: bool = Field(default=False)
     role_id: int = Field(..., ge=1)
     creation_date: datetime
     deletion_date: Optional[datetime]
@@ -45,5 +46,6 @@ class UserDTO(BaseModel):
             last_name=user.last_name,
             role_id=user.role_id,
             creation_date=user.creation_date,
-            deletion_date=user.deletion_date
+            deletion_date=user.deletion_date,
+            is_2fa_enabled=user.is_2fa_enabled
         )

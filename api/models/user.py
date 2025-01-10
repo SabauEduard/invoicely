@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, DateTime, func, ForeignKey
+from sqlalchemy import Column, String, Integer, DateTime, func, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
 from database import Base
 
@@ -12,6 +12,9 @@ class User(Base):
     first_name = Column(String(50), nullable=False)
     email = Column(String(100), unique=True, nullable=False)
     password = Column(String(100), nullable=False)
+
+    is_2fa_enabled = Column(Boolean, default=False)
+    otp_secret = Column(String(100), nullable=True)
     
     role_id = Column(Integer, ForeignKey('roles.id'), nullable=False)
 
