@@ -15,10 +15,10 @@ import React, { useState, useEffect } from 'react';
 import { Header } from '../components/header.js';
 
 export const overDueList = [
-    { id: 1, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '20050 RON', dueDate: '2025-01-15', importance: 'high' },
-    { id: 2, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '50 RON', dueDate: '2025-01-15', importance: 'low' },
-    { id: 3, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '50 RON', dueDate: '2025-01-15', importance: 'low' },
-    { id: 4, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '50 RON', dueDate: '2025-01-15', importance: 'medium' },
+    { id: 1, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '20050 RON', emissionDate:'2024-12-20', dueDate: '2025-01-15', importance: 'high', note:'Avem aici una bucata factura la licenta de windows nu mai umblati cu windows crackuit', tags: ['laptop']},
+    { id: 2, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '50 RON', emissionDate:'2024-12-20', dueDate: '2025-01-15', importance: 'low', note:'Avem aici una bucata factura la licenta de windows nu mai umblati cu windows crackuit', tags: ['laptop'] },
+    { id: 3, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '50 RON', emissionDate:'2024-12-20', dueDate: '2025-01-15', importance: 'low', note:'Avem aici una bucata factura la licenta de windows nu mai umblati cu windows crackuit', tags: ['laptop']},
+    { id: 4, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '50 RON', emissionDate:'2024-12-20', dueDate: '2025-01-15', importance: 'medium', note:'Avem aici una bucata factura la licenta de windows nu mai umblati cu windows crackuit', tags: ['laptop']},
 ]
 
 export const importance = [
@@ -171,12 +171,15 @@ export default function newInvoice() {
                                 <div className='w-full'>
                                     {
                                         selectedTags.length > 0 && (
-                                            <div className="flex flex-wrap gap-2">
-                                                {selectedTags.map((tag) => (
-                                                    <Chip key={tag} variant="flat" onClose={() => handleDeleteTag(tag)}>
-                                                        {tag}
-                                                    </Chip>
-                                                ))}
+                                            <div className='w-full'>
+                                                <h1 className='text-gray-500 font-medium text-base'>SELECTED TAGS</h1>
+                                                <div className="flex flex-wrap gap-2 pt-2">
+                                                    {selectedTags.map((tag) => (
+                                                        <Chip key={tag} variant="flat" onClose={() => handleDeleteTag(tag)}>
+                                                            {tag}
+                                                        </Chip>
+                                                    ))}
+                                                </div>
                                             </div>
                                         )
                                     }
