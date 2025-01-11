@@ -13,259 +13,77 @@ import {
     DropdownMenu,
     DropdownItem,
     Chip,
-    User,
     Pagination,
+    DateRangePicker,
 } from "@nextui-org/react";
 
 export const columns = [
-    { name: "ID", uid: "id", sortable: true },
-    { name: "NAME", uid: "name", sortable: true },
-    { name: "AGE", uid: "age", sortable: true },
-    { name: "ROLE", uid: "role", sortable: true },
-    { name: "TEAM", uid: "team" },
-    { name: "EMAIL", uid: "email" },
-    { name: "STATUS", uid: "status", sortable: true },
-    { name: "ACTIONS", uid: "actions" },
+    { name: "STATUS", "uid": "status", sortable: true },
+    { name: "NAME", "uid": "name", sortable: true },
+    { name: "VENDOR", "uid": "vendor", sortable: true },
+    { name: "AMOUNT", "uid": "amount", sortable: true },
+    { name: "IMPORTANCE", "uid": "importance", sortable: true },
+    { name: "NOTE", "uid": "note" },
+    { name: "TAGS", "uid": "tags" },
+    { name: "EMISSION DATE", "uid": "emission_date", sortable: true },
+    { name: "DUE DATE", "uid": "due_date", sortable: true },
+    { name: "ACTIONS", "uid": "actions" },
 ];
 
 export const statusOptions = [
-    { name: "Active", uid: "active" },
-    { name: "Paused", uid: "paused" },
-    { name: "Vacation", uid: "vacation" },
+    { name: "Pending", uid: "pending" },
+    { name: "Overdue", uid: "overdue" },
+    { name: "Paid", uid: "paid" },
 ];
 
-export const users = [
+export const importanceOptions = [
+    { name: "Low", uid: "low" },
+    { name: "Medium", uid: "medium" },
+    { name: "High", uid: "high" },
+];
+
+export const invoices = [
     {
         id: 1,
-        name: "Tony Reichert",
-        role: "CEO",
-        team: "Management",
-        status: "active",
-        age: "29",
-        avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-        email: "tony.reichert@example.com",
+        name: "Factura curent",
+        vendor: "Enel",
+        amount: "200",
+        status: "paid",
+        importance: "low",
+        note: "Factura curenta pentru luna ianuarie.",
+        tags: ["apartament", "utilitati"],
+        emission_date: "2025-01-25",
+        due_date: "2025-02-25",
     },
     {
         id: 2,
-        name: "Zoey Lang",
-        role: "Tech Lead",
-        team: "Development",
-        status: "paused",
-        age: "25",
-        avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-        email: "zoey.lang@example.com",
+        name: "Factura utilitati",
+        vendor: "Apaserv",
+        amount: "150",
+        status: "pending",
+        importance: "medium",
+        note: "Factura utilitati pentru mama",
+        tags: ["casa", "utilitati"],
+        emission_date: "2024-12-20",
+        due_date: "2025-01-20",
     },
     {
         id: 3,
-        name: "Jane Fisher",
-        role: "Sr. Dev",
-        team: "Development",
-        status: "active",
-        age: "22",
-        avatar: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-        email: "jane.fisher@example.com",
-    },
-    {
-        id: 4,
-        name: "William Howard",
-        role: "C.M.",
-        team: "Marketing",
-        status: "vacation",
-        age: "28",
-        avatar: "https://i.pravatar.cc/150?u=a048581f4e29026701d",
-        email: "william.howard@example.com",
-    },
-    {
-        id: 5,
-        name: "Kristen Copper",
-        role: "S. Manager",
-        team: "Sales",
-        status: "active",
-        age: "24",
-        avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026700d",
-        email: "kristen.cooper@example.com",
-    },
-    {
-        id: 6,
-        name: "Brian Kim",
-        role: "P. Manager",
-        team: "Management",
-        age: "29",
-        avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-        email: "brian.kim@example.com",
-        status: "Active",
-    },
-    {
-        id: 7,
-        name: "Michael Hunt",
-        role: "Designer",
-        team: "Design",
-        status: "paused",
-        age: "27",
-        avatar: "https://i.pravatar.cc/150?u=a042581f4e29027007d",
-        email: "michael.hunt@example.com",
-    },
-    {
-        id: 8,
-        name: "Samantha Brooks",
-        role: "HR Manager",
-        team: "HR",
-        status: "active",
-        age: "31",
-        avatar: "https://i.pravatar.cc/150?u=a042581f4e27027008d",
-        email: "samantha.brooks@example.com",
-    },
-    {
-        id: 9,
-        name: "Frank Harrison",
-        role: "F. Manager",
-        team: "Finance",
-        status: "vacation",
-        age: "33",
-        avatar: "https://i.pravatar.cc/150?img=4",
-        email: "frank.harrison@example.com",
-    },
-    {
-        id: 10,
-        name: "Emma Adams",
-        role: "Ops Manager",
-        team: "Operations",
-        status: "active",
-        age: "35",
-        avatar: "https://i.pravatar.cc/150?img=5",
-        email: "emma.adams@example.com",
-    },
-    {
-        id: 11,
-        name: "Brandon Stevens",
-        role: "Jr. Dev",
-        team: "Development",
-        status: "active",
-        age: "22",
-        avatar: "https://i.pravatar.cc/150?img=8",
-        email: "brandon.stevens@example.com",
-    },
-    {
-        id: 12,
-        name: "Megan Richards",
-        role: "P. Manager",
-        team: "Product",
-        status: "paused",
-        age: "28",
-        avatar: "https://i.pravatar.cc/150?img=10",
-        email: "megan.richards@example.com",
-    },
-    {
-        id: 13,
-        name: "Oliver Scott",
-        role: "S. Manager",
-        team: "Security",
-        status: "active",
-        age: "37",
-        avatar: "https://i.pravatar.cc/150?img=12",
-        email: "oliver.scott@example.com",
-    },
-    {
-        id: 14,
-        name: "Grace Allen",
-        role: "M. Specialist",
-        team: "Marketing",
-        status: "active",
-        age: "30",
-        avatar: "https://i.pravatar.cc/150?img=16",
-        email: "grace.allen@example.com",
-    },
-    {
-        id: 15,
-        name: "Noah Carter",
-        role: "IT Specialist",
-        team: "I. Technology",
-        status: "paused",
-        age: "31",
-        avatar: "https://i.pravatar.cc/150?img=15",
-        email: "noah.carter@example.com",
-    },
-    {
-        id: 16,
-        name: "Ava Perez",
-        role: "Manager",
-        team: "Sales",
-        status: "active",
-        age: "29",
-        avatar: "https://i.pravatar.cc/150?img=20",
-        email: "ava.perez@example.com",
-    },
-    {
-        id: 17,
-        name: "Liam Johnson",
-        role: "Data Analyst",
-        team: "Analysis",
-        status: "active",
-        age: "28",
-        avatar: "https://i.pravatar.cc/150?img=33",
-        email: "liam.johnson@example.com",
-    },
-    {
-        id: 18,
-        name: "Sophia Taylor",
-        role: "QA Analyst",
-        team: "Testing",
-        status: "active",
-        age: "27",
-        avatar: "https://i.pravatar.cc/150?img=29",
-        email: "sophia.taylor@example.com",
-    },
-    {
-        id: 19,
-        name: "Lucas Harris",
-        role: "Administrator",
-        team: "Information Technology",
-        status: "paused",
-        age: "32",
-        avatar: "https://i.pravatar.cc/150?img=50",
-        email: "lucas.harris@example.com",
-    },
-    {
-        id: 20,
-        name: "Mia Robinson",
-        role: "Coordinator",
-        team: "Operations",
-        status: "active",
-        age: "26",
-        avatar: "https://i.pravatar.cc/150?img=45",
-        email: "mia.robinson@example.com",
-    },
+        name: "Factura licenta windows",
+        vendor: "Microsoft",
+        amount: "50",
+        status: "overdue",
+        importance: "high",
+        note: "Factura licenta windows pentru laptop",
+        tags: ["laptop"],
+        emission_date: "2024-12-15",
+        due_date: "2025-01-15",
+    }
 ];
 
 export function capitalize(s) {
     return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : "";
 }
-
-export const PlusIcon = ({ size = 24, width, height, ...props }) => {
-    return (
-        <svg
-            aria-hidden="true"
-            fill="none"
-            focusable="false"
-            height={size || height}
-            role="presentation"
-            viewBox="0 0 24 24"
-            width={size || width}
-            {...props}
-        >
-            <g
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={1.5}
-            >
-                <path d="M6 12h12" />
-                <path d="M12 18V6" />
-            </g>
-        </svg>
-    );
-};
 
 export const VerticalDotsIcon = ({ size = 24, width, height, ...props }) => {
     return (
@@ -341,19 +159,49 @@ export const ChevronDownIcon = ({ strokeWidth = 1.5, ...otherProps }) => {
     );
 };
 
-const statusColorMap = {
-    active: "success",
-    paused: "danger",
-    vacation: "warning",
+export const RefreshDateIcon = ({ fill = "currentColor", size, height, width, ...props }) => {
+    return (
+        <svg
+            fill="none"
+            height={size || height || 24}
+            viewBox="0 0 24 24"
+            width={size || width || 24}
+            xmlns="http://www.w3.org/2000/svg"
+            {...props}
+        >
+            <path
+                clipRule="evenodd"
+                d="M21.962,12.875A10.03,10.03,0,1,1,19.122,5H16a1,1,0,0,0-1,1h0a1,1,0,0,0,1,1h4.143A1.858,1.858,0,0,0,22,5.143V1a1,1,0,0,0-1-1h0a1,1,0,0,0-1,1V3.078A11.985,11.985,0,1,0,23.95,13.1a1.007,1.007,0,0,0-1-1.1h0A.982.982,0,0,0,21.962,12.875Z"
+                fill={fill}
+                fillRule="evenodd"
+            />
+        </svg>
+    );
 };
 
-const INITIAL_VISIBLE_COLUMNS = ["name", "role", "status", "actions"];
+
+const statusColorMap = {
+    paid: "success",
+    pending: "warning",
+    overdue: "danger",
+};
+
+const importanceColorMap = {
+    low: "success",
+    medium: "warning",
+    high: "danger",
+};
+
+const INITIAL_VISIBLE_COLUMNS = ["name", "vendor", "amount", "status", "tags", "importance", "actions"];
 
 export default function TableContent() {
     const [filterValue, setFilterValue] = React.useState("");
     const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
     const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
     const [statusFilter, setStatusFilter] = React.useState("all");
+    const [importanceFilter, setImportanceFilter] = React.useState("all");
+    const [emissionDateFilter, setEmissionDateFilter] = React.useState(null);
+    const [dueDateFilter, setDueDateFilter] = React.useState(null);
     const [sortDescriptor, setSortDescriptor] = React.useState({
         column: "age",
         direction: "ascending",
@@ -370,21 +218,51 @@ export default function TableContent() {
     }, [visibleColumns]);
 
     const filteredItems = React.useMemo(() => {
-        let filteredUsers = [...users];
+        let filteredInvoices = [...invoices];
 
         if (hasSearchFilter) {
-            filteredUsers = filteredUsers.filter((user) =>
-                user.name.toLowerCase().includes(filterValue.toLowerCase()),
-            );
+            filteredInvoices = filteredInvoices.filter((invoice) => {
+                return Object.values(invoice).some(value =>
+                    value.toString().toLowerCase().includes(filterValue.toLowerCase())
+                );
+            });
         }
         if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
-            filteredUsers = filteredUsers.filter((user) =>
-                Array.from(statusFilter).includes(user.status),
+            filteredInvoices = filteredInvoices.filter((invoice) =>
+                Array.from(statusFilter).includes(invoice.status),
             );
         }
 
-        return filteredUsers;
-    }, [users, filterValue, statusFilter]);
+        if (importanceFilter !== "all" && Array.from(importanceFilter).length !== importanceOptions.length) {
+            filteredInvoices = filteredInvoices.filter((invoice) =>
+                Array.from(importanceFilter).includes(invoice.importance),
+            );
+        }
+
+        if (emissionDateFilter) {
+            filteredInvoices = filteredInvoices.filter((invoice) => {
+                const emissionDate = new Date(invoice.emission_date);
+                const startDate = new Date(emissionDateFilter.start);
+                const endDate = new Date(emissionDateFilter.end);
+
+                console.log(emissionDate, startDate, endDate, emissionDate >= startDate && emissionDate <= endDate);
+
+                return emissionDate.getTime() >= startDate.getTime() && emissionDate.getTime() <= endDate.getTime();
+            });
+        }
+
+        if (dueDateFilter) {
+            filteredInvoices = filteredInvoices.filter((invoice) => {
+                const dueDate = new Date(invoice.due_date);
+                const startDate = new Date(dueDateFilter.start);
+                const endDate = new Date(dueDateFilter.end);
+
+                return dueDate.getTime() >= startDate.getTime() && dueDate.getTime() <= endDate.getTime();
+            });
+        }
+
+        return filteredInvoices;
+    }, [invoices, filterValue, statusFilter, importanceFilter, emissionDateFilter, dueDateFilter]);
 
     const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -409,28 +287,31 @@ export default function TableContent() {
         const cellValue = user[columnKey];
 
         switch (columnKey) {
-            case "name":
-                return (
-                    <User
-                        avatarProps={{ radius: "lg", src: user.avatar }}
-                        description={user.email}
-                        name={cellValue}
-                    >
-                        {user.email}
-                    </User>
-                );
-            case "role":
-                return (
-                    <div className="flex flex-col">
-                        <p className="text-bold text-small capitalize">{cellValue}</p>
-                        <p className="text-bold text-tiny capitalize text-default-400">{user.team}</p>
-                    </div>
-                );
             case "status":
                 return (
                     <Chip className="capitalize" color={statusColorMap[user.status]} size="sm" variant="flat">
                         {cellValue}
                     </Chip>
+                );
+            case "importance":
+                return (
+                    <Chip color={importanceColorMap[cellValue]} size="sm" variant="dot" className="border-none">
+                        {cellValue}
+                    </Chip>
+                )
+            case "amount":
+                return cellValue + " RON";
+            case "tags":
+                return (
+                    <div className="space-x-1">
+                        {
+                            (cellValue || []).map((tag) => (
+                                <Chip key={tag} size="sm" variant="flat">
+                                    {tag}
+                                </Chip>
+                            ))
+                        }
+                    </div>
                 );
             case "actions":
                 return (
@@ -518,6 +399,27 @@ export default function TableContent() {
                         <Dropdown>
                             <DropdownTrigger className="hidden sm:flex">
                                 <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
+                                    Importance
+                                </Button>
+                            </DropdownTrigger>
+                            <DropdownMenu
+                                disallowEmptySelection
+                                aria-label="Table Columns"
+                                closeOnSelect={false}
+                                selectedKeys={importanceFilter}
+                                selectionMode="multiple"
+                                onSelectionChange={setImportanceFilter}
+                            >
+                                {importanceOptions.map((importance) => (
+                                    <DropdownItem key={importance.uid} className="capitalize">
+                                        {capitalize(importance.name)}
+                                    </DropdownItem>
+                                ))}
+                            </DropdownMenu>
+                        </Dropdown>
+                        <Dropdown>
+                            <DropdownTrigger className="hidden sm:flex">
+                                <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
                                     Columns
                                 </Button>
                             </DropdownTrigger>
@@ -538,16 +440,29 @@ export default function TableContent() {
                         </Dropdown>
                     </div>
                 </div>
-                <div className="flex justify-between items-center">
-                    <span className="text-default-400 text-small">Total {users.length} users</span>
+                <div className="w-full flex justify-between items-start">
+                    <span className="text-default-400 text-small">Total {invoices.length} invoices</span>
+                    <div className="flex gap-2 items-center">
+                        <DateRangePicker value={emissionDateFilter} onChange={setEmissionDateFilter} className="max-w-xs" label="Emission date" />
+                        <DateRangePicker value={dueDateFilter} onChange={setDueDateFilter} className="max-w-xs" label="Due date" />
+                        <Button isIconOnly aria-label="Remove date" variant="light" className="rounded-full text-default-400" onPress={() => {
+                            setEmissionDateFilter(null);
+                            setDueDateFilter(null);
+                        }}>
+                            <RefreshDateIcon />
+                        </Button>
+                    </div>
                 </div>
             </div>
         );
     }, [
         filterValue,
         statusFilter,
+        importanceFilter,
+        emissionDateFilter,
+        dueDateFilter,
         visibleColumns,
-        users.length,
+        invoices.length,
         onSearchChange,
         hasSearchFilter,
     ]);
@@ -606,8 +521,8 @@ export default function TableContent() {
                     </TableColumn>
                 )}
             </TableHeader>
-            <TableBody emptyContent={"No users found"} items={sortedItems}
-                >
+            <TableBody emptyContent={"No invoices found"} items={sortedItems}
+            >
                 {(item) => (
                     <TableRow key={item.id}>
                         {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
