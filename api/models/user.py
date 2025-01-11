@@ -22,3 +22,5 @@ class User(Base):
     deletion_date = Column(DateTime, nullable=True)
 
     role = relationship("Role", back_populates="users")
+
+    invoices = relationship("Invoice", back_populates="user")
