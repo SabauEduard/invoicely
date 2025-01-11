@@ -11,6 +11,7 @@ from routers.auth_router import auth_router, get_current_user
 from routers.role_router import role_router
 from routers.user_router import user_router
 from routers.tag_router import tag_router
+from routers.invoice_router import invoice_router
 
 
 app = FastAPI(
@@ -36,6 +37,7 @@ app.include_router(user_router, prefix="/users")
 app.include_router(auth_router, prefix="/auth")
 app.include_router(role_router, prefix="/roles", dependencies=[Depends(get_current_user)])
 app.include_router(tag_router, prefix="/tags", dependencies=[Depends(get_current_user)])
+app.include_router(invoice_router, prefix="/invoices", dependencies=[Depends(get_current_user)])
 
 
 @app.get("/")
