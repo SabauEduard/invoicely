@@ -8,9 +8,18 @@ import {
     Autocomplete,
     AutocompleteItem,
     DatePicker,
-    Chip
+    Chip,
+    Textarea
 } from "@nextui-org/react";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Header } from '../components/header.js';
+
+export const overDueList = [
+    { id: 1, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '20050 RON', dueDate: '2025-01-15', importance: 'high' },
+    { id: 2, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '50 RON', dueDate: '2025-01-15', importance: 'low' },
+    { id: 3, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '50 RON', dueDate: '2025-01-15', importance: 'low' },
+    { id: 4, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '50 RON', dueDate: '2025-01-15', importance: 'medium' },
+]
 
 export const importance = [
     { label: "Low", key: "low" },
@@ -26,6 +35,38 @@ export const status = [
 
 export default function newInvoice() {
     const [submitted, setSubmitted] = React.useState(null);
+    const [dragActive, setDragActive] = React.useState(false);
+    const [id, setId] = React.useState(0);
+    const [file, setFile] = React.useState(null);
+
+    const handleDrag = function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (e.type === "dragover" || e.type === "dragenter") {
+            setDragActive(true);
+        } else if (e.type === "dragleave") {
+            setDragActive(false);
+        }
+    };
+
+    const handleDrop = function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        setDragActive(false);
+
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            console.log(e.dataTransfer.files)
+            setId(e.dataTransfer.files);
+            setFile(e.dataTransfer.files[0]);
+        }
+    };
+
+    const deleteFile = (fileToBeDeleted) => {
+        setFile(null);
+        setId(0);
+    };
 
     const onSubmit = (e) => {
         e.preventDefault();
@@ -59,18 +100,18 @@ export default function newInvoice() {
         setOptions((prevOptions) => [
             ...prevOptions,
             { label: selectedTag, key: selectedTag },
-        ]); 
+        ]);
 
         console.log("Selected Tags:", selectedTags);
         console.log(options)
     }
 
+    useEffect(() => {
+    }, [file]);
+
     return (
         <div className='bg-neutral-100 min-h-screen flex flex-col'>
-            <div className="flex items-center justify-between w-full h-20 px-6">
-                <Logo />
-                <i className="text-black fi fi-tr-circle-user text-[32px] flex items-center"></i>
-            </div>
+            <Header overDueList={overDueList} />
             <div
                 className="bg-white px-10 py-8 rounded-l-3xl ml-20 mb-10 space-y-8">
                 <div className="w-full flex items-center justify-between">
@@ -111,13 +152,21 @@ export default function newInvoice() {
                                 <div className='w-full space-y-4'>
                                     <h1 className='text-gray-500 font-medium text-base'>DETAILS</h1>
                                     <div className="flex w-full md:flex-nowrap mb-6 md:mb-0 gap-4">
-                                        <Input radius='lg' name='note' className='w-full' size='sm' label="Note" type='text' />
+                                        <Input radius='lg' name='name' className='w-full' size='sm' isRequired label="Name" type='text' />
                                         <Autocomplete radius='lg' className="w-full" name='tags' size='sm' label="Tags" onSelectionChange={handleSelectionChange}>
                                             {options.map((option) => (
                                                 <AutocompleteItem key={option.key}>{option.label}</AutocompleteItem>
                                             ))}
                                         </Autocomplete>
                                     </div>
+                                </div>
+                                <div className='w-full'>
+                                    <Textarea
+                                        isClearable
+                                        className="w-full"
+                                        label="Note"
+                                        placeholder="Write a note for your invoice."
+                                    />
                                 </div>
                                 <div className='w-full'>
                                     {
@@ -138,14 +187,35 @@ export default function newInvoice() {
                             </div>
                             <div className='flex-1'>
                                 <div className="flex flex-col h-full">
-                                    <div onDragEnter={() => { }} onDragLeave={() => { }} onDragOver={() => { }} onDrop={() => { }}></div>
-                                    <label className="flex flex-col justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                                    {dragActive && <div className="fixed w-screen h-screen top-0 left-0 right-0 bottom-0" onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}></div>}
+                                    <label
+                                        onDragEnter={(e) => handleDrag(e)}
+                                        style={{ backgroundColor: dragActive && "#f3f4f6" }}
+                                        className="flex flex-col justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
                                         <div className='h-full flex flex-col items-center justify-center py-2'>
-                                            <svg className="w-8 h-8 mb-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
-                                            </svg>
-                                            <p className="mb-2 text-sm text-gray-500"><span className="font-semibold">Click to upload</span> or drag an invoice</p>
+                                            {
+                                                file ?
+                                                    file.type === 'application/pdf' ? (
+                                                        <embed src={URL.createObjectURL(file)} type="application/pdf" width="100%" height="600px" />
+                                                    ) : (
+                                                        <img src={URL.createObjectURL(file)} alt="Selected file" />
+                                                    )
+                                                    : <>
+                                                        <svg className="w-8 h-8 mb-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                                        </svg>
+                                                        <p className="mb-2 text-sm text-gray-500"><span className="font-semibold">Click to upload</span> or drag an invoice</p>
+                                                    </>
+                                            }
                                         </div>
+                                        <input
+                                            type="file"
+                                            className="hidden"
+                                            onChange={(e) => {
+                                                setId(e.target.files);
+                                                setFile(e.target.files[0]);
+                                            }}
+                                        />
                                     </label>
                                 </div>
                             </div>

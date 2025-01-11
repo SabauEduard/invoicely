@@ -3,9 +3,17 @@
 import Logo from './components/logo.js';
 import HomeCards from './components/home_cards.js';
 import SingleHomeCard from './components/single_home_card.js';
-import { Button } from "@nextui-org/react";
+import { Button, Badge } from "@nextui-org/react";
 import TableContent from './components/tableContent.js';
 import { useRouter } from 'next/navigation';
+import { Header } from './components/header.js'
+
+export const overDueList = [
+  { id: 1, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '20050 RON', dueDate: '2025-01-15', importance: 'high' },
+  { id: 2, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '50 RON', dueDate: '2025-01-15', importance: 'low' },
+  { id: 3, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '50 RON', dueDate: '2025-01-15', importance: 'low' },
+  { id: 4, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '50 RON', dueDate: '2025-01-15', importance: 'medium' },
+]
 
 export const PlusIcon = ({ size = 24, width, height, ...props }) => {
   return (
@@ -37,11 +45,8 @@ export default function Home() {
   const router = useRouter();
 
   return (
-    <div className='bg-neutral-100 min-h-screen flex flex-col'>
-      <div className="flex items-center justify-between w-full h-20 px-6">
-        <Logo />
-        <i className="text-black fi fi-tr-circle-user text-[32px] flex items-center"></i>
-      </div>
+    <div className='bg-neutral-100 min-h-screen flex relataive flex-col'>
+      <Header overDueList={overDueList} />
       <div
         className="bg-white px-10 py-8 rounded-l-3xl ml-20 mb-10 space-y-8">
         <div className="w-full flex items-center justify-between">
@@ -49,10 +54,10 @@ export default function Home() {
           <Button color="primary" startContent={<PlusIcon />} onPress={() => router.push('/newInvoice')}>Add new invoice</Button>
         </div>
         <div className='space-x-5 flex flex-row w-full justify-center'>
-          <HomeCards />
-          <HomeCards />
-          <HomeCards />
-          <HomeCards />
+          <HomeCards icon="fi-rr-alarm-exclamation" color="#DFE3C7" title="Overdue amount" text="1489.45 RON" />
+          <HomeCards icon="fi-rs-sack-dollar" color="#e2d5f3" title="Unpaid totals" text="2500.98 RON" />
+          <HomeCards icon="fi-rr-seller" color="#f0e6e6" title="The vendor with the most invoices" text="Enel" />
+          <HomeCards icon="fi-rr-payroll-calendar" color="#dce6f7" title="The month with the most expenses" text="January" />
           <SingleHomeCard />
         </div>
         <div className=" p-4 rounded-2xl border-2 border-neutral-100">
