@@ -20,6 +20,7 @@ import {
 export const columns = [
     { name: "STATUS", "uid": "status", sortable: true },
     { name: "NAME", "uid": "name", sortable: true },
+    { name: "CATEGORY", "uid": "category", sortable: true },
     { name: "VENDOR", "uid": "vendor", sortable: true },
     { name: "AMOUNT", "uid": "amount", sortable: true },
     { name: "IMPORTANCE", "uid": "importance", sortable: true },
@@ -42,10 +43,20 @@ export const importanceOptions = [
     { name: "High", uid: "high" },
 ];
 
+export const categoriesOptions = [
+    { name: "it", uid: "it" },
+    { name: "repair", uid: "repair" },
+    { name: "consumables", uid: "consumables" },
+    { name: "electricity", uid: "electricity" },
+    { name: "phone", uid: "phone" },
+    { name: "other", uid: "other" },
+];
+
 export const invoices = [
     {
         id: 1,
         name: "Factura curent",
+        category: "electricity",
         vendor: "Enel",
         amount: "200",
         status: "paid",
@@ -58,6 +69,7 @@ export const invoices = [
     {
         id: 2,
         name: "Factura utilitati",
+        category: "electricity",
         vendor: "Apaserv",
         amount: "150",
         status: "pending",
@@ -70,6 +82,7 @@ export const invoices = [
     {
         id: 3,
         name: "Factura licenta windows",
+        category: "it",
         vendor: "Microsoft",
         amount: "50",
         status: "overdue",
@@ -192,7 +205,7 @@ const importanceColorMap = {
     high: "danger",
 };
 
-const INITIAL_VISIBLE_COLUMNS = ["name", "vendor", "amount", "status", "tags", "importance", "actions"];
+const INITIAL_VISIBLE_COLUMNS = ["name", "category", "vendor", "amount", "status", "tags", "importance", "actions"];
 
 export default function TableContent() {
     const [filterValue, setFilterValue] = React.useState("");
@@ -202,6 +215,7 @@ export default function TableContent() {
     const [importanceFilter, setImportanceFilter] = React.useState("all");
     const [emissionDateFilter, setEmissionDateFilter] = React.useState(null);
     const [dueDateFilter, setDueDateFilter] = React.useState(null);
+    const [categoryFilter, setCategoryFilter] = React.useState("all");
     const [sortDescriptor, setSortDescriptor] = React.useState({
         column: "age",
         direction: "ascending",
@@ -261,8 +275,14 @@ export default function TableContent() {
             });
         }
 
+        if (categoryFilter !== "all" && Array.from(categoryFilter).length !== categoriesOptions.length) {
+            filteredInvoices = filteredInvoices.filter((invoice) =>
+                Array.from(categoryFilter).includes(invoice.category),
+            );
+        }
+
         return filteredInvoices;
-    }, [invoices, filterValue, statusFilter, importanceFilter, emissionDateFilter, dueDateFilter]);
+    }, [invoices, filterValue, statusFilter, importanceFilter, emissionDateFilter, dueDateFilter, categoryFilter]);
 
     const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -399,6 +419,27 @@ export default function TableContent() {
                         <Dropdown>
                             <DropdownTrigger className="hidden sm:flex">
                                 <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
+                                    Category
+                                </Button>
+                            </DropdownTrigger>
+                            <DropdownMenu
+                                disallowEmptySelection
+                                aria-label="Table Columns"
+                                closeOnSelect={false}
+                                selectedKeys={categoryFilter}
+                                selectionMode="multiple"
+                                onSelectionChange={setCategoryFilter}
+                            >
+                                {categoriesOptions.map((category) => (
+                                    <DropdownItem key={category.uid} className="capitalize">
+                                        {capitalize(category.name)}
+                                    </DropdownItem>
+                                ))}
+                            </DropdownMenu>
+                        </Dropdown>
+                        <Dropdown>
+                            <DropdownTrigger className="hidden sm:flex">
+                                <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
                                     Importance
                                 </Button>
                             </DropdownTrigger>
@@ -461,6 +502,7 @@ export default function TableContent() {
         importanceFilter,
         emissionDateFilter,
         dueDateFilter,
+        categoryFilter,
         visibleColumns,
         invoices.length,
         onSearchChange,
