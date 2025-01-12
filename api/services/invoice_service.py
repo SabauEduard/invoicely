@@ -1,6 +1,7 @@
+import os
 from typing import List, Optional
 
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.invoice import Invoice
@@ -17,6 +18,12 @@ class InvoiceService:
         '''
         current_user = await get_current_user(db)
         invoice_create_dto.user_id = current_user.id
+
+        file_path = f"uploads/{current_user.id}/{invoice_create_dto.category}/{invoice_create_dto.vendor}/{invoice_create_dto.name}"
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        with open(file_path, "wb") as file_object:
+            file_object.write(await invoice_create_dto.file.read())
+
         return await InvoiceRepository.create(invoice_create_dto, db)
     
     @staticmethod

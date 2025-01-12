@@ -16,6 +16,8 @@ class Invoice(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
+    name = Column(String(128), nullable=False)
+
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
 
     category = Column(Enum(InvoiceCategory))
@@ -36,9 +38,9 @@ class Invoice(Base):
 
     incomplete = Column(Boolean)
 
-    emitted_date = Column(DateTime)
+    emission_date = Column(DateTime)
 
-    expiry_date = Column(DateTime)
+    due_date = Column(DateTime)
 
     user = relationship("User", back_populates="invoices")
 
