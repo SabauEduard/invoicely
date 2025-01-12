@@ -52,3 +52,4 @@ alembic revision --autogenerate -m "migration message"
 poetry shell
 alembic upgrade <version>
 ```
+
