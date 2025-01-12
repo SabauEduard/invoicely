@@ -5,6 +5,8 @@ from sqlalchemy import engine_from_config, pool
 from logging.config import fileConfig
 from models.user import User
 from models.role import Role
+from models.tag import Tag
+from models.invoice import Invoice
 from database import Base
 
 # Load .env file
