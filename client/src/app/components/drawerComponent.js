@@ -48,7 +48,7 @@ export const DrawerComponent = ({ isOpen, size, onClose, notificare }) => {
                                 </div>
                                 <div className='w-full'>
                                     <Textarea
-                                        isClearable
+                                        readOnly
                                         className="w-full"
                                         label="Note"
                                         placeholder="Write a note for your invoice."

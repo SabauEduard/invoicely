@@ -19,13 +19,18 @@ class InvoiceService:
         '''
         invoice_create_dto.user_id = user.id
 
-        file_path = f"uploads/{user.id}/{invoice_create_dto.category}/{invoice_create_dto.vendor}/{invoice_create_dto.name}"
+        file_path = f"uploads/{user.id}/categorie/{invoice_create_dto.vendor}/{invoice_create_dto.file.filename}"
         os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        # with open(file_path, "wb") as file_object:
-        #     file_object.write(await invoice_create_dto.file.read())
+        with open(file_path, "wb") as file_object:
+            file_object.write(await invoice_create_dto.file.read())
+
+        invoice_create_dto.category = 1
+        invoice_create_dto.path = file_path
+        invoice_create_dto.duplicate = False
+        invoice_create_dto.incomplete = False
 
         return await InvoiceRepository.create(invoice_create_dto, db)
-    
+
     @staticmethod
     async def get_all(db: AsyncSession, user: UserDTO) -> List[InvoiceDTO]:
         '''

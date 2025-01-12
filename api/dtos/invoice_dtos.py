@@ -1,4 +1,4 @@
-from fastapi import UploadFile
+from fastapi import UploadFile, Form, File
 
 from enums.category import InvoiceCategory
 from pydantic import Field, BaseModel, model_validator, json
@@ -47,23 +47,50 @@ class InvoiceDTO(BaseModel):
 class InvoiceCreateDTO(BaseModel):
     name: str = Field(..., alias="name")
     user_id: Optional[int] = Field(None, alias="user_id")
-    category: int = Field(..., alias="category")
+    category: int = Field(None, alias="category")
     vendor: str = Field(..., alias="vendor")
     amount: float = Field(..., alias="amount")
     status: str = Field(..., alias="status")
     importance: int = Field(..., alias="importance")
     notes: str = Field(None, alias="notes")
-    duplicate: bool = Field(..., alias="duplicate")
+    duplicate: bool = Field(None, alias="duplicate")
     incomplete: bool = Field(None, alias="incomplete")
     emission_date: str = Field(None, alias="emission_date")
     due_date: str = Field(None, alias="due_date")
-    
+    file: UploadFile = File(..., alias="file")
+    path: str = Field(None, alias="path")
+
+    @classmethod
+    def as_form(
+            cls,
+            name: str = Form(...),
+            file: UploadFile = File(...),
+            vendor: str = Form(...),
+            amount: float = Form(...),
+            status: str = Form(...),
+            importance: int = Form(...),
+            notes: str = Form(None),
+            emission_date: str = Form(...),
+            due_date: str = Form(...),
+    ):
+        return cls(
+            name=name,
+            file=file,
+            vendor=vendor,
+            amount=amount,
+            status=status,
+            importance=importance,
+            notes=notes,
+            emission_date=emission_date,
+            due_date=due_date,
+        )
+
     def to_invoice(self):
         return Invoice(
             name=self.name,
             user_id=self.user_id,
             category=InvoiceCategory(self.category),
-            path=f"api/uploads/{self.user_id}/{self.category}/{self.vendor}/{self.name}",
+            path=self.path,
             vendor=self.vendor,
             amount=self.amount,
             status=self.status,
