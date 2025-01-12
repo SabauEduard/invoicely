@@ -1,4 +1,4 @@
-# Initial Setup
+cd # Initial Setup
 
 ```
 pip install poetry

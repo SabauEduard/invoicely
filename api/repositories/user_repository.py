@@ -79,7 +79,6 @@ class UserRepository:
         print(email)
         result = await db.execute(select(User).filter(User.email == email))
         user = result.scalars().first()
-        print(user.email)
         return UserDTO.from_user(user)
 
     @staticmethod
