@@ -158,7 +158,7 @@ class AuthService:
     async def verify_2fa(db: AsyncSession, user_id: int, otp: str):
         if not otp:
             raise HTTPException(status_code=400, detail="OTP is required")
-        secret_otp = UserRepository.get_otp_code_by_id(user_id, db)
+        secret_otp = await UserRepository.get_otp_code_by_id(user_id, db)
         if verify_otp(secret_otp, otp):
             return {"message": "2FA verified"}
         else:
