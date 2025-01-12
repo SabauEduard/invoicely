@@ -9,6 +9,7 @@ from datetime import datetime, timedelta, timezone
 from config import settings
 import jwt
 import json
+import bcrypt
 from starlette import status
 from dtos.token_dtos import TokenDTO
 from services.otp_service import generate_otp_secret, get_totp_uri, generate_qr_code, verify_otp
@@ -16,11 +17,10 @@ from services.otp_service import generate_otp_secret, get_totp_uri, generate_qr_
 
 class AuthService:
     secret_key = settings().secret_key
-    bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
     @staticmethod
     async def verify_password(plain_password, hashed_password):
-        return AuthService.bcrypt_context.verify(plain_password, hashed_password)
+        return bcrypt.checkpw(plain_password.encode('utf-8'), hashed_password.encode('utf-8'))
 
     @staticmethod
     async def get_current_user(db: AsyncSession, auth_cookie: str):
@@ -38,13 +38,14 @@ class AuthService:
             )
 
             email = payload.get("sub")
-
+            print("Email: " + email)
             if email is None:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
                 )
-
-            return UserRepository.get_by_email(email, db)
+            user = await UserRepository.get_by_email(email, db)
+            print(user)
+            return user
 
         except Exception as e:
             raise HTTPException(
@@ -71,7 +72,7 @@ class AuthService:
 
         if not password:
             raise HTTPException(status_code=401, detail="Invalid credentials")
-        if not AuthService.verify_password(form_data.password, password):
+        if not await AuthService.verify_password(form_data.password, password):
             raise HTTPException(status_code=401, detail="Invalid credentials")
         if user.is_2fa_enabled:
             await AuthService.verify_2fa(db, user.id, otp)

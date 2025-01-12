@@ -1,4 +1,5 @@
 from typing import List
+import bcrypt
 
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -20,6 +21,11 @@ class UserService:
         check_email = await UserRepository.get_by_email(user_create_dto.email, db)
         if check_email:
             raise HTTPException(status_code=400, detail="Email already taken")
+
+        salt = bcrypt.gensalt()
+        # Hash the password
+        hashed_password = bcrypt.hashpw(user_create_dto.password.encode('utf-8'), salt)
+        user_create_dto.password = hashed_password
         return await UserRepository.create(user_create_dto, db)
         
 

@@ -57,8 +57,7 @@ class InvoiceCreateDTO(BaseModel):
     incomplete: bool = Field(None, alias="incomplete")
     emission_date: str = Field(None, alias="emission_date")
     due_date: str = Field(None, alias="due_date")
-    file: UploadFile = Field(..., alias="file")
-
+    
     def to_invoice(self):
         return Invoice(
             name=self.name,

@@ -6,6 +6,8 @@ from starlette import status
 
 from database import get_db
 from dtos.invoice_dtos import InvoiceDTO, InvoiceCreateDTO
+from dtos.user_dtos import UserDTO
+from routers.auth_router import get_current_user
 from services.invoice_service import InvoiceService
 
 invoice_router = APIRouter(tags=["Invoices"])
@@ -19,8 +21,8 @@ invoice_router = APIRouter(tags=["Invoices"])
         200: {"description": "Invoices retrieved successfully"},
     }
 )
-async def get_invoices(db: AsyncSession = Depends(get_db)):
-    return await InvoiceService.get_all(db)
+async def get_invoices(db: AsyncSession = Depends(get_db), user: UserDTO = Depends(get_current_user)):
+    return await InvoiceService.get_all(db, user)
 
 
 @invoice_router.get(
@@ -32,8 +34,8 @@ async def get_invoices(db: AsyncSession = Depends(get_db)):
         200: {"description": "Invoice retrieved successfully"},
     }
 )
-async def get_invoice(invoice_id: int, db: AsyncSession = Depends(get_db)):
-    return await InvoiceService.get_by_id(invoice_id, db)
+async def get_invoice(invoice_id: int, db: AsyncSession = Depends(get_db), user: UserDTO = Depends(get_current_user)):
+    return await InvoiceService.get_by_id(invoice_id, db, user)
 
 
 @invoice_router.post(
@@ -46,8 +48,8 @@ async def get_invoice(invoice_id: int, db: AsyncSession = Depends(get_db)):
         201: {"description": "Invoice created successfully"},
     }
 )
-async def create_invoice(invoice_create_dto: InvoiceCreateDTO, db: AsyncSession = Depends(get_db)):
-    return await InvoiceService.create(invoice_create_dto, db)
+async def create_invoice(invoice_create_dto: InvoiceCreateDTO, db: AsyncSession = Depends(get_db), user: UserDTO = Depends(get_current_user)):
+    return await InvoiceService.create(invoice_create_dto, db, user)
 
 @invoice_router.put(
     "/{invoice_id}",
@@ -58,8 +60,8 @@ async def create_invoice(invoice_create_dto: InvoiceCreateDTO, db: AsyncSession 
         200: {"description": "Invoice updated successfully"},
     }
 )
-async def update_invoice(invoice_id: int, invoice_create_dto: InvoiceCreateDTO, db: AsyncSession = Depends(get_db)):
-    return await InvoiceService.update_invoice(invoice_id, invoice_create_dto, db)
+async def update_invoice(invoice_id: int, invoice_create_dto: InvoiceCreateDTO, db: AsyncSession = Depends(get_db), user: UserDTO = Depends(get_current_user)):
+    return await InvoiceService.update_invoice(invoice_id, invoice_create_dto, db, user)
 
 @invoice_router.delete(
     "/{invoice_id}",
@@ -69,6 +71,6 @@ async def update_invoice(invoice_id: int, invoice_create_dto: InvoiceCreateDTO, 
         204: {"description": "Invoice deleted successfully"},
     },
 )
-async def delete_invoice(invoice_id: int, db: AsyncSession = Depends(get_db)):
-    await InvoiceService.delete_invoice(invoice_id, db)
+async def delete_invoice(invoice_id: int, db: AsyncSession = Depends(get_db), user: UserDTO = Depends(get_current_user)):
+    await InvoiceService.delete_invoice(invoice_id, db, user)
     return
