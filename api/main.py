@@ -19,7 +19,7 @@ app = FastAPI(
     summary="An API to manage invoices",
 )
 
-app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+# app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 origins = [
     "http://localhost",

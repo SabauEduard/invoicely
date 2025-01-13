@@ -5,6 +5,7 @@ import pdf2image
 import cv2
 import numpy as np
 import os
+from dotenv import load_dotenv
 from os.path import join, dirname
 from transformers import AdamW, AutoTokenizer, Trainer, TrainingArguments, AutoModel, AutoModelForQuestionAnswering, AutoModelForSequenceClassification, get_scheduler
 import torch
@@ -17,8 +18,11 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract'
-poppler_path = r'd:\Downloads\poppler-24.02.0\Library\bin'
+load_dotenv(join(dirname(__file__), '.env'))
+
+print(os.getenv('TESSERACT_CMD'))
+pytesseract.pytesseract.tesseract_cmd = os.getenv('TESSERACT_CMD')
+poppler_path = os.getenv('POPPLER_PATH')
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
