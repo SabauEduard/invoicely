@@ -11,14 +11,16 @@ import {
     Chip,
     Textarea
 } from "@nextui-org/react";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Header } from '../components/header.js';
+import { useForm } from 'react-hook-form';
+import api from '../api/api';
 
 export const overDueList = [
-    { id: 1, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '20050 RON', emissionDate:'2024-12-20', dueDate: '2025-01-15', importance: 'high', note:'Avem aici una bucata factura la licenta de windows nu mai umblati cu windows crackuit', tags: ['laptop']},
-    { id: 2, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '50 RON', emissionDate:'2024-12-20', dueDate: '2025-01-15', importance: 'low', note:'Avem aici una bucata factura la licenta de windows nu mai umblati cu windows crackuit', tags: ['laptop'] },
-    { id: 3, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '50 RON', emissionDate:'2024-12-20', dueDate: '2025-01-15', importance: 'low', note:'Avem aici una bucata factura la licenta de windows nu mai umblati cu windows crackuit', tags: ['laptop']},
-    { id: 4, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '50 RON', emissionDate:'2024-12-20', dueDate: '2025-01-15', importance: 'medium', note:'Avem aici una bucata factura la licenta de windows nu mai umblati cu windows crackuit', tags: ['laptop']},
+    { id: 1, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '20050 RON', emissionDate: '2024-12-20', dueDate: '2025-01-15', importance: 'high', note: 'Avem aici una bucata factura la licenta de windows nu mai umblati cu windows crackuit', tags: ['laptop'] },
+    { id: 2, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '50 RON', emissionDate: '2024-12-20', dueDate: '2025-01-15', importance: 'low', note: 'Avem aici una bucata factura la licenta de windows nu mai umblati cu windows crackuit', tags: ['laptop'] },
+    { id: 3, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '50 RON', emissionDate: '2024-12-20', dueDate: '2025-01-15', importance: 'low', note: 'Avem aici una bucata factura la licenta de windows nu mai umblati cu windows crackuit', tags: ['laptop'] },
+    { id: 4, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '50 RON', emissionDate: '2024-12-20', dueDate: '2025-01-15', importance: 'medium', note: 'Avem aici una bucata factura la licenta de windows nu mai umblati cu windows crackuit', tags: ['laptop'] },
 ]
 
 export const importance = [
@@ -36,8 +38,22 @@ export const status = [
 export default function newInvoice() {
     const [submitted, setSubmitted] = React.useState(null);
     const [dragActive, setDragActive] = React.useState(false);
-    const [id, setId] = React.useState(0);
     const [file, setFile] = React.useState(null);
+    const [selectedTags, setSelectedTags] = useState([]);
+    const [options, setOptions] = useState([
+        { label: "apartament", key: "apartament" },
+        { label: "utilitati", key: "utilitati" },
+        { label: "casa", key: "casa" },
+        { label: "laptop", key: "laptop" },
+    ]);
+    const initialTags = [
+        { label: "apartament", key: "apartament" },
+        { label: "utilitati", key: "utilitati" },
+        { label: "casa", key: "casa" },
+        { label: "laptop", key: "laptop" },
+    ];
+    const [inputValue, setInputValue] = useState('');
+    const { register, watch, handleSubmit, setValue, formState: { errors } } = useForm();
 
     const handleDrag = function (e) {
         e.preventDefault();
@@ -57,53 +73,95 @@ export default function newInvoice() {
         setDragActive(false);
 
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-            console.log(e.dataTransfer.files)
-            setId(e.dataTransfer.files);
+            console.log(e.dataTransfer.files[0])
+            setValue("invoice", e.dataTransfer.files[0]);
             setFile(e.dataTransfer.files[0]);
         }
     };
 
     const deleteFile = (fileToBeDeleted) => {
         setFile(null);
-        setId(0);
     };
-
-    const onSubmit = (e) => {
-        e.preventDefault();
-
-        const data = Object.fromEntries(new FormData(e.currentTarget));
-
-        setSubmitted(data);
-    };
-
-    const [options, setOptions] = useState([
-        { label: "apartament", key: "apartament" },
-        { label: "utilitati", key: "utilitati" },
-        { label: "casa", key: "casa" },
-        { label: "laptop", key: "laptop" },
-    ]);
-    const [selectedTags, setSelectedTags] = useState([]);
 
     const handleSelectionChange = (selectedKey) => {
+        console.log("new selection", selectedKey);
         if (selectedKey !== null) {
             selectedTags.push(selectedKey);
             setOptions((prevOptions) =>
                 prevOptions.filter((option) => option.key !== selectedKey)
             );
+            setInputValue('');
+        }
+    };
+
+    const handleSelectionChangeEnter = (e) => {
+        if (e.key === "Enter" && e.target.value !== "") {
+            const selectedTag = options.find(tag => tag.key === e.target.value);
+            const isSubstring = options.some(tag => tag.label.includes(e.target.value));
+
+            // if the tag is not in the tags list, add it to the selected tags
+            // this prevents to add the same tag twice (one by pressing enter and one by selecting it from the list)
+            if (!selectedTag && !isSubstring) {
+                selectedTags.push(e.target.value);
+                setOptions(options.filter(tag => tag.key !== e.target.value));
+                setInputValue(''); // Resetează valoarea input-ului
+            }
         }
     };
 
     const handleDeleteTag = (selectedTag) => {
-        if (selectedTag !== null) { }
-        setSelectedTags((prevTags) => prevTags.filter((tag) => tag !== selectedTag));
+        if (selectedTag !== null) {
+            setSelectedTags((prevTags) => prevTags.filter((tag) => tag !== selectedTag));
 
-        setOptions((prevOptions) => [
-            ...prevOptions,
-            { label: selectedTag, key: selectedTag },
-        ]);
+            // if the tag was initially in the tags list, add it back (because it was one of the tags that was added previously by the user)
+            // if it was added by mistake in the current session of adding a new invoice, it will not be added back 
+            if (initialTags.some(tag => tag.key === selectedTag)) {
+                setInputValue('');
+                setOptions((prevOptions) => [
+                    ...prevOptions,
+                    { label: selectedTag, key: selectedTag },
+                ]);
+            }
+        }
+    };
 
-        console.log("Selected Tags:", selectedTags);
-        console.log(options)
+    const formatDate = (date) => {
+        const year = date.year;
+        const month = String(date.month).padStart(2, '0'); // Adaugă zero la început dacă luna are o singură cifră
+        const day = String(date.day).padStart(2, '0'); // Adaugă zero la început dacă ziua are o singură cifră
+        return `${year}-${month}-${day}`;
+    };
+
+    const onSubmit = (data) => {
+        console.log(data);
+        console.log(selectedTags);
+        
+        const formData = new FormData();
+
+        formData.append('vendor', data.vendor);
+        formData.append('amount', data.amount);
+        formData.append('importance', data.importance);
+        formData.append('status', data.status);
+        formData.append('emissionDate', data.emissionDate);
+        formData.append('dueDate', data.dueDate);
+        formData.append('name', data.name);
+        formData.append('notes', data.notes);
+        formData.append('tags', selectedTags);
+        formData.append('invoice', data.invoice[0]);
+
+
+        const sendFormData = async () => {
+            const result = await api.post('/invoices/', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+                withCredentials: true,
+            });
+
+            console.log(result);
+        }
+
+        sendFormData();
     }
 
     useEffect(() => {
@@ -118,42 +176,49 @@ export default function newInvoice() {
                     <h2 className='text-black text-xl font-semibold'>Create New Invoice</h2>
                 </div>
                 <div className='border-2 border-neutral-100 p-6 flex items-center rounded-2xl'>
-                    <Form className="w-full" validationBehavior='native' onSubmit={onSubmit}>
+                    <Form className="w-full" validationBehavior='native' onSubmit={handleSubmit(onSubmit)}>
                         <div className='w-full h-full flex gap-20'>
                             <div className="flex flex-col flex-1 items-end space-y-6">
                                 <div className='w-full space-y-4'>
                                     <h1 className='text-gray-500 font-medium text-base'>INVOICE DETAILS</h1>
                                     <div className='space-y-5 w-full'>
                                         <div className="flex w-full md:flex-nowrap mb-6 md:mb-0 gap-4">
-                                            <Input isRequired radius='lg' name='vendor' className='w-full' size='sm' label="Vendor" type='text' />
-                                            <Input isRequired radius='lg' name='amount' className='w-full' size='sm' label="Amount (RON)" type='number' />
+                                            <Input {...register('vendor')} id='vendor' name='vendor' isRequired radius='lg' className='w-full' size='sm' label="Vendor" type='text' />
+                                            {errors['vendor'] && <p className="text-[12px] text-red-800">{errors['vendor'].message}</p>}
+                                            <Input {...register('amount')} id='amount' name='amount' isRequired radius='lg' className='w-full' size='sm' label="Amount (RON)" type='number' />
+                                            {errors['amount'] && <p className="text-[12px] text-red-800">{errors['amount'].message}</p>}
                                         </div>
                                         <div className="flex w-full flex-wrap md:flex-nowrap gap-4">
-                                            <Autocomplete radius='lg' className="w-full" name='importance' size='sm' isRequired label="Importance">
+                                            <Autocomplete {...register('importance')} id='importance' name='importance' radius='lg' className="w-full" size='sm' isRequired label="Importance">
                                                 {importance.map((importance) => (
                                                     <AutocompleteItem key={importance.key}>{importance.label}</AutocompleteItem>
                                                 ))}
                                             </Autocomplete>
-                                            <Autocomplete radius='lg' className="w-full" name='status' size='sm' isRequired label="Status">
+                                            {errors['importance'] && <p className="text-[12px] text-red-800">{errors['importance'].message}</p>}
+                                            <Autocomplete {...register('status')} id='status' name='status' radius='lg' className="w-full" size='sm' isRequired label="Status">
                                                 {status.map((status) => (
                                                     <AutocompleteItem key={status.key}>{status.label}</AutocompleteItem>
                                                 ))}
                                             </Autocomplete>
+                                            {errors['status'] && <p className="text-[12px] text-red-800">{errors['status'].message}</p>}
                                         </div>
                                     </div>
                                 </div>
                                 <div className='w-full space-y-4'>
                                     <h1 className='text-gray-500 font-medium text-base'>DATES</h1>
                                     <div className="flex w-full md:flex-nowrap mb-6 md:mb-0 gap-4">
-                                        <DatePicker className='w-full' radius='lg' name='emissionDate' size='sm' isRequired label='Emission Date' />
-                                        <DatePicker className='w-full' radius='lg' name='dueDate' size='sm' isRequired label='Due Date' />
+                                        <DatePicker {...register('emissionDate')} id='emissionDate' name='emissionDate' onChange={(date) => setValue('emissionDate', formatDate(date))} className='w-full' radius='lg' size='sm' isRequired label='Emission Date' />
+                                        {errors['emissionDate'] && <p className="text-[12px] text-red-800">{errors['emissionDate'].message}</p>}
+                                        <DatePicker {...register('dueDate')} id='dueDate' name='dueDate' onChange={(date) => setValue('dueDate', formatDate(date))} className='w-full' radius='lg' size='sm' isRequired label='Due Date' />
+                                        {errors['dueDate'] && <p className="text-[12px] text-red-800">{errors['dueDate'].message}</p>}
                                     </div>
                                 </div>
                                 <div className='w-full space-y-4'>
                                     <h1 className='text-gray-500 font-medium text-base'>DETAILS</h1>
                                     <div className="flex w-full md:flex-nowrap mb-6 md:mb-0 gap-4">
-                                        <Input radius='lg' name='name' className='w-full' size='sm' isRequired label="Name" type='text' />
-                                        <Autocomplete radius='lg' className="w-full" name='tags' size='sm' label="Tags" onSelectionChange={handleSelectionChange}>
+                                        <Input {...register('name')} id='name' name='name' radius='lg' className='w-full' size='sm' isRequired label="Name" type='text' />
+                                        {errors['name'] && <p className="text-[12px] text-red-800">{errors['name'].message}</p>}
+                                        <Autocomplete selectedKey={inputValue} allowsCustomValue radius='lg' className="w-full" name='tags' size='sm' label="Tags" onKeyDown={handleSelectionChangeEnter} onSelectionChange={handleSelectionChange}>
                                             {options.map((option) => (
                                                 <AutocompleteItem key={option.key}>{option.label}</AutocompleteItem>
                                             ))}
@@ -162,6 +227,9 @@ export default function newInvoice() {
                                 </div>
                                 <div className='w-full'>
                                     <Textarea
+                                        {...register('notes')}
+                                        id='notes'
+                                        name='notes'
                                         isClearable
                                         className="w-full"
                                         label="Note"
@@ -211,13 +279,18 @@ export default function newInvoice() {
                                                     </>
                                             }
                                         </div>
-                                        <input
-                                            type="file"
-                                            className="hidden"
-                                            onChange={(e) => {
-                                                setId(e.target.files);
-                                                setFile(e.target.files[0]);
-                                            }}
+                                        
+                                        <Input {...register('invoice')} 
+                                        id='invoice' 
+                                        name='invoice' 
+                                        className='hidden'
+                                        isRequired 
+                                        label="invoice" 
+                                        type='file'
+                                        multiple={false}
+                                        onChange={(e) => {
+                                            setFile(e.target.files[0]);
+                                        }}
                                         />
                                     </label>
                                 </div>

@@ -212,3 +212,4 @@ yarn-error.log*
 Thumbs.db
 
 uploads
+*.safetensors

@@ -6,6 +6,7 @@ from starlette import status
 
 from database import get_db
 from dtos.invoice_dtos import InvoiceDTO, InvoiceCreateDTO
+from dtos.tag_dtos import TagCreateDTO
 from dtos.user_dtos import UserDTO
 from routers.auth_router import get_current_user
 from services.invoice_service import InvoiceService
@@ -48,7 +49,12 @@ async def get_invoice(invoice_id: int, db: AsyncSession = Depends(get_db), user:
         201: {"description": "Invoice created successfully"},
     }
 )
-async def create_invoice(invoice_create_dto: InvoiceCreateDTO = Depends(InvoiceCreateDTO.as_form), db: AsyncSession = Depends(get_db), user: UserDTO = Depends(get_current_user)):
+async def create_invoice(invoice_create_dto: InvoiceCreateDTO = Depends(InvoiceCreateDTO.as_form), tags_dto: TagCreateDTO = TagCreateDTO(), db: AsyncSession = Depends(get_db), user: UserDTO = Depends(get_current_user)):
+    print("sui")
+    print(invoice_create_dto)
+    print(tags_dto)
+    
+    return HttpResponse(status=201)
     return await InvoiceService.create(invoice_create_dto, db, user)
 
 @invoice_router.put(
