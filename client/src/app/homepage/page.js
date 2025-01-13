@@ -61,10 +61,10 @@ async function getInvoices() {
 }
 
 const calculateAverageInvoiceAmount = (invoicesList) => {
-  if (invoicesList.length === 0) return 0;
+  if (invoicesList?.length === 0) return 0;
 
   const totalAmount = invoicesList.reduce((sum, invoice) => sum + invoice.amount, 0);
-  return totalAmount / invoicesList.length;
+  return totalAmount / (invoicesList?.length || 1);
 };
 
 const calculateOverDueAmount = (invoicesList) => {
@@ -147,7 +147,7 @@ export default function Home() {
               <HomeCards icon="fi-rs-sack-dollar" color="#e2d5f3" title="Unpaid totals" text={unpaidTotals.toFixed(2).toString() + " RON"} />
               <HomeCards icon="fi-rr-seller" color="#f0e6e6" title="The vendor with the most invoices" text={vendorWithMostInvoices.charAt(0).toUpperCase() + vendorWithMostInvoices.slice(1)} />
               <HomeCards icon="fi-rr-payroll-calendar" color="#dce6f7" title="The average invoice cost" text={averageInvoiceAmount.toFixed(2).toString() + " RON"} />
-              <SingleHomeCard totalInvoices={invoicesList.length} />
+              <SingleHomeCard totalInvoices={invoicesList?.length} />
             </div>
           ) : (
             <div className='space-x-5 flex flex-row w-full justify-center'>

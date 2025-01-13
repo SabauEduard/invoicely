@@ -95,7 +95,7 @@ class AuthService:
         return TokenDTO(access_token=token, token_type="bearer")
 
     @staticmethod
-    async def verify_refresh_token(db: AsyncSession, response, refresh_token: str = Cookie(None)):
+    async def verify_refresh_token(response, refresh_token: str = Cookie(None)):
         try:
             auth_cookie_dict = json.loads(refresh_token)
             payload = jwt.decode(

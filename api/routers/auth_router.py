@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Body, Depends, Response, Cookie
+from fastapi import APIRouter, Body, Depends, Response, Cookie, Request, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
@@ -58,7 +58,7 @@ async def disable_2fa(user_id: int, db: AsyncSession = Depends(get_db)):
     return await AuthService.disable_2fa(db, user_id)
 
 
-@auth_router.post(
+@auth_router.get(
     "/refresh",
     response_model=TokenDTO,
     response_model_by_alias=False,
@@ -74,11 +74,15 @@ async def disable_2fa(user_id: int, db: AsyncSession = Depends(get_db)):
     },
 )
 async def refresh_token(
-    response: Response,
-    refresh_token: str = Body(..., embed=True),
-    db: AsyncSession = Depends(get_db)
+    request: Request,
+    response: Response
 ):
-    return await AuthService.verify_refresh_token(db, response, refresh_token)
+    auth_cookie = request.cookies.get("auth_cookie")
+    
+    if not auth_cookie:
+        raise HTTPException(status_code=400, detail="Invalid token")
+    
+    return await AuthService.verify_refresh_token(response, auth_cookie)
 
 
 @auth_router.post(

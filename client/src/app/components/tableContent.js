@@ -226,7 +226,7 @@ export default function TableContent(props) {
     const [emissionDateFilter, setEmissionDateFilter] = React.useState(null);
     const [dueDateFilter, setDueDateFilter] = React.useState(null);
     const [categoryFilter, setCategoryFilter] = React.useState("all");
-    const [invoices, setInvoices] = React.useState(props.invoicesList);
+    const [invoices, setInvoices] = React.useState(props.invoicesList || []);
     const [sortDescriptor, setSortDescriptor] = React.useState({
         column: "age",
         direction: "ascending",
@@ -532,7 +532,7 @@ export default function TableContent(props) {
         dueDateFilter,
         categoryFilter,
         visibleColumns,
-        props.invoicesList.length,
+        // props.invoicesList.length,
         onSearchChange,
         hasSearchFilter,
     ]);
@@ -567,7 +567,7 @@ export default function TableContent(props) {
     }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
 
     return (
-        <Table
+        props.invoicesList && <Table
             isHeaderSticky
             aria-label="Example table with custom cells, pagination and sorting"
             bottomContent={bottomContent}
