@@ -6,6 +6,7 @@ import fastapi
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
+from fastapi.staticfiles import StaticFiles
 
 from routers.auth_router import auth_router, get_current_user
 from routers.role_router import role_router
@@ -13,11 +14,12 @@ from routers.user_router import user_router
 from routers.tag_router import tag_router
 from routers.invoice_router import invoice_router
 
-
 app = FastAPI(
     title="Invoicely API",
     summary="An API to manage invoices",
 )
+
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 origins = [
     "http://localhost",

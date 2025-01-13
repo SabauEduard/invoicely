@@ -12,7 +12,7 @@ class InvoiceDTO(BaseModel):
     id: int = Field(..., alias="id")
     name: str = Field(..., alias="name")
     user_id: int = Field(..., alias="user_id")
-    category: int = Field(..., alias="category")
+    category: str = Field(..., alias="category")
     path: str = Field(..., alias="path")
     vendor: str = Field(..., alias="vendor")
     amount: float = Field(..., alias="amount")
@@ -47,7 +47,7 @@ class InvoiceDTO(BaseModel):
 class InvoiceCreateDTO(BaseModel):
     name: str = Field(..., alias="name")
     user_id: Optional[int] = Field(None, alias="user_id")
-    category: int = Field(None, alias="category")
+    category: str = Field(None, alias="category")
     vendor: str = Field(..., alias="vendor")
     amount: float = Field(..., alias="amount")
     status: str = Field(..., alias="status")
@@ -59,6 +59,7 @@ class InvoiceCreateDTO(BaseModel):
     due_date: str = Field(None, alias="due_date")
     file: UploadFile = File(..., alias="file")
     path: str = Field(None, alias="path")
+    content: str = Field(None, alias="content")
 
     @classmethod
     def as_form(
@@ -91,6 +92,7 @@ class InvoiceCreateDTO(BaseModel):
             user_id=self.user_id,
             category=InvoiceCategory(self.category),
             path=self.path,
+            content=self.content,
             vendor=self.vendor,
             amount=self.amount,
             status=self.status,

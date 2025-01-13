@@ -45,7 +45,7 @@ export const importanceOptions = [
 
 export const categoriesOptions = [
     { name: "it", uid: "it" },
-    { name: "repair", uid: "repair" },
+    { name: "repairs", uid: "repairs" },
     { name: "consumables", uid: "consumables" },
     { name: "electricity", uid: "electricity" },
     { name: "phone", uid: "phone" },

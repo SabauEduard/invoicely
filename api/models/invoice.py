@@ -29,6 +29,8 @@ class Invoice(Base):
     amount = Column(DECIMAL(10, 2), nullable=False)
 
     status = Column(String(32), nullable=False)
+    
+    content = Column(String, nullable=True)
 
     importance = Column(Integer, nullable=False)
 
