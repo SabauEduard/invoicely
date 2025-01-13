@@ -5,7 +5,7 @@ import Image from 'next/image'
 
 
 
-export default function SingleHomeCard() {
+export default function SingleHomeCard(props) {
     return (
         <div className='rounded-2xl border-2 items-center flex bg-[#f2f7f8] space-x-5 border-gray-100 w-full h-48'>
             <Image
@@ -17,7 +17,13 @@ export default function SingleHomeCard() {
             />
             <div>
                 <div className='flex flex-row items-baseline space-x-2'>
-                    <p className='text-black text-3xl font-bold'>05</p>
+                    {
+                        props.totalInvoices > 9 ? (
+                            <p className='text-black text-3xl font-bold'>{props.totalInvoices}</p>
+                        ) : (
+                            <p className='text-black text-3xl font-bold'>0{props.totalInvoices}</p>
+                        )
+                    }
                     <p className='text-black font-bold'>invoices</p>
                 </div>
                 <div>

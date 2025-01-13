@@ -2,6 +2,7 @@ from fastapi import UploadFile, Form, File
 
 from enums.category import InvoiceCategory
 from enums.importance import Importance
+from enums.status import InvoiceStatus
 from pydantic import Field, BaseModel, model_validator, json
 from typing import Optional
 
@@ -17,7 +18,7 @@ class InvoiceDTO(BaseModel):
     path: str = Field(..., alias="path")
     vendor: str = Field(..., alias="vendor")
     amount: float = Field(..., alias="amount")
-    status: str = Field(..., alias="status")
+    status: InvoiceStatus = Field(..., alias="status")
     importance: Importance = Field(..., alias="importance")
     notes: str = Field(None, alias="notes")
     duplicate: bool = Field(..., alias="duplicate")
@@ -51,7 +52,7 @@ class InvoiceCreateDTO(BaseModel):
     category: InvoiceCategory = Field(None, alias="category")
     vendor: str = Field(..., alias="vendor")
     amount: float = Field(..., alias="amount")
-    status: str = Field(..., alias="status")
+    status: InvoiceStatus = Field(..., alias="status")
     importance: Importance = Field(..., alias="importance")
     notes: str = Field(None, alias="notes")
     duplicate: bool = Field(None, alias="duplicate")

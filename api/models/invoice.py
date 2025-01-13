@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 from database import Base
 from enums.category import InvoiceCategory
 from enums.importance import Importance
+from enums.status import InvoiceStatus
 
 invoice_tags = Table(
     'invoice_tags',
@@ -29,7 +30,7 @@ class Invoice(Base):
 
     amount = Column(DECIMAL(10, 2), nullable=False)
 
-    status = Column(String(32), nullable=False)
+    status = Column(Enum(InvoiceStatus), nullable=False)
     
     content = Column(Text, nullable=True)
 
