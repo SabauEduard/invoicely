@@ -9,7 +9,8 @@ import {
     AutocompleteItem,
     DatePicker,
     Chip,
-    Textarea
+    Textarea,
+    Alert
 } from "@nextui-org/react";
 import React, { useState, useEffect, useRef } from 'react';
 import { Header } from '../components/header.js';
@@ -135,7 +136,7 @@ export default function newInvoice() {
     const onSubmit = (data) => {
         console.log(data);
         console.log(selectedTags);
-        
+
         const formData = new FormData();
 
         formData.append('vendor', data.vendor);
@@ -150,14 +151,20 @@ export default function newInvoice() {
         formData.append('file', data.invoice);
 
         const sendFormData = async () => {
-            const result = await api.post('/invoices/', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-                withCredentials: true,
-            });
+            try {
+                const result = await api.post('/invoices/', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                    withCredentials: true,
+                });
 
-            console.log(result);
+
+
+            } catch (error) {
+                console.log(error);
+            }
+
         }
 
         sendFormData();
@@ -174,6 +181,12 @@ export default function newInvoice() {
                 <div className="w-full flex items-center justify-between">
                     <h2 className='text-black text-xl font-semibold'>Create New Invoice</h2>
                 </div>
+                <Alert
+                    color="success"
+                    description={"salut"}
+                    title={"titlu"}
+                    variant="faded"
+                />
                 <div className='border-2 border-neutral-100 p-6 flex items-center rounded-2xl'>
                     <Form className="w-full" validationBehavior='native' onSubmit={handleSubmit(onSubmit)}>
                         <div className='w-full h-full flex gap-20'>
@@ -278,17 +291,17 @@ export default function newInvoice() {
                                                     </>
                                             }
                                         </div>
-                                        
-                                        <Input {...register('invoice')} 
-                                        id='invoice' 
-                                        name='invoice' 
-                                        className='hidden'
-                                        label="invoice" 
-                                        type='file'
-                                        multiple={false}
-                                        onChange={(e) => {
-                                            setFile(e.target.files[0]);
-                                        }}
+
+                                        <Input {...register('invoice')}
+                                            id='invoice'
+                                            name='invoice'
+                                            className='hidden'
+                                            label="invoice"
+                                            type='file'
+                                            multiple={false}
+                                            onChange={(e) => {
+                                                setFile(e.target.files[0]);
+                                            }}
                                         />
                                     </label>
                                 </div>

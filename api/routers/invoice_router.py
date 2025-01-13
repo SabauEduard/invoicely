@@ -10,6 +10,7 @@ from dtos.tag_dtos import TagCreateDTO
 from dtos.user_dtos import UserDTO
 from routers.auth_router import get_current_user
 from services.invoice_service import InvoiceService
+from services.tag_service import TagService
 
 invoice_router = APIRouter(tags=["Invoices"])
 
@@ -53,6 +54,10 @@ async def create_invoice(invoice_create_dto: InvoiceCreateDTO = Depends(InvoiceC
     print("sui")
     print(invoice_create_dto)
     print(tags)
+    
+    if tags:
+        tags = TagCreateDTO(tags=tags)
+        await TagService.create(tags, db, user)
     
     return await InvoiceService.create(invoice_create_dto, db, user)
 
