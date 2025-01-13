@@ -23,7 +23,8 @@ app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 origins = [
     "http://localhost",
-    "http://localhost:3050", 
+    "http://localhost:3050",
+    "http://localhost:3000",
 ]
 
 # Add CORS middleware to the app
