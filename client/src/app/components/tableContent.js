@@ -52,48 +52,6 @@ export const categoriesOptions = [
     { name: "other", uid: "other" },
 ];
 
-// export const invoices = [
-//     {
-//         id: 1,
-//         name: "Factura curent",
-//         category: "electricity",
-//         vendor: "Enel",
-//         amount: "200",
-//         status: "paid",
-//         importance: "low",
-//         note: "Factura curenta pentru luna ianuarie.",
-//         tags: ["apartament", "utilitati"],
-//         emission_date: "2025-01-25",
-//         due_date: "2025-02-25",
-//     },
-//     {
-//         id: 2,
-//         name: "Factura utilitati",
-//         category: "electricity",
-//         vendor: "Apaserv",
-//         amount: "150",
-//         status: "pending",
-//         importance: "medium",
-//         note: "Factura utilitati pentru mama",
-//         tags: ["casa", "utilitati"],
-//         emission_date: "2024-12-20",
-//         due_date: "2025-01-20",
-//     },
-//     {
-//         id: 3,
-//         name: "Factura licenta windows",
-//         category: "it",
-//         vendor: "Microsoft",
-//         amount: "50",
-//         status: "overdue",
-//         importance: "high",
-//         note: "Factura licenta windows pentru laptop",
-//         tags: ["laptop"],
-//         emission_date: "2024-12-15",
-//         due_date: "2025-01-15",
-//     }
-// ];
-
 export function capitalize(s) {
     return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : "";
 }

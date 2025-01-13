@@ -11,7 +11,21 @@ import {
     Chip
 } from "@nextui-org/react";
 
+const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+};
+
+
 export const DrawerComponent = ({ isOpen, size, onClose, notificare }) => {
+    const format_emission_date = formatDate(notificare.emission_date);
+    const format_due_date = formatDate(notificare.due_date);
+
+    const serverBaseUrl = 'http://127.0.0.1:8000';
+    const imagePath = `${serverBaseUrl}/${notificare.path.replace(/\\/g, '/')}`;
 
     return (
         notificare &&
@@ -35,8 +49,8 @@ export const DrawerComponent = ({ isOpen, size, onClose, notificare }) => {
                                 <div className='w-full space-y-4'>
                                     <h1 className='text-gray-500 font-medium text-base'>DATES</h1>
                                     <div className="flex w-full md:flex-nowrap mb-6 md:mb-0 gap-4">
-                                        <Input className='w-full' radius='lg' name='emissionDate' readOnly value={notificare.emissionDate} size='sm' label='Emission Date' />
-                                        <Input className='w-full' radius='lg' name='dueDate' readOnly value={notificare.dueDate} size='sm' label='Due Date' />
+                                        <Input className='w-full' radius='lg' name='emissionDate' readOnly value={format_emission_date} size='sm' label='Emission Date' />
+                                        <Input className='w-full' radius='lg' name='dueDate' readOnly value={format_due_date} size='sm' label='Due Date' />
                                     </div>
                                 </div>
                                 <div className='w-full space-y-4'>
@@ -50,25 +64,14 @@ export const DrawerComponent = ({ isOpen, size, onClose, notificare }) => {
                                         readOnly
                                         className="w-full"
                                         label="Note"
-                                        placeholder="Write a note for your invoice."
                                         value={notificare.note}
                                     />
                                 </div>
-                                <div className='w-full'>
-                                    {
-                                        notificare.tags.length > 0 && (
-                                            <div className='w-full'>
-                                                <h1 className='text-gray-500 font-medium text-base'>SELECTED TAGS</h1>
-                                                <div className="flex flex-wrap gap-2 pt-2">
-                                                    {notificare.tags.map((tag) => (
-                                                        <Chip key={tag} variant="flat">
-                                                            {tag}
-                                                        </Chip>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )
-                                    }
+                                <div className='w-full pb-4'>
+                                    <div className='w-full border-4 border-neutral-100 rounded-2xl p-2'>
+                                        <h1 className='text-gray-500 font-medium text-base'>Invoice Image</h1>
+                                        <img src={imagePath} alt="Invoice" className="w-full h-auto rounded-lg" />
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -87,6 +87,10 @@ const calculateUnpaidTotals = (invoicesList) => {
   return total;
 }
 
+const overDueInvoices = (invoicesList) => {
+  return invoicesList.filter(invoice => invoice.status === 'overdue');
+}
+
 const calculateVendorWithMostInvoices = (invoicesList) => {
   const vendorCount = {};
 
@@ -120,6 +124,7 @@ export default function Home() {
   const [unpaidTotals, setUnpaidTotals] = useState(0);
   const [vendorWithMostInvoices, setVendorWithMostInvoices] = useState(null);
   const [averageInvoiceAmount, setAverageInvoiceAmount] = useState(0);
+  const [overDueList, setOverDueList] = useState(null);
 
   useEffect(() => {
     getInvoices().then((data) => {
@@ -128,12 +133,13 @@ export default function Home() {
       setUnpaidTotals(calculateUnpaidTotals(data));
       setVendorWithMostInvoices(calculateVendorWithMostInvoices(data));
       setAverageInvoiceAmount(calculateAverageInvoiceAmount(data));
+      setOverDueList(overDueInvoices(data));
     });
   }, []);
 
   return (
     <div className='bg-neutral-100 min-h-screen flex relataive flex-col'>
-      <Header overDueList={overDueList} />
+      <Header overDueList={overDueList} visibleNotification={true} overDueInvoices={overDueList} invoicesListLength={invoicesList?.filter(invoice => invoice.status === 'overdue').length} />
       <div
         className="bg-white px-10 py-8 rounded-l-3xl ml-20 mb-10 space-y-8">
         <div className="w-full flex items-center justify-between">
