@@ -129,7 +129,7 @@ export default function Home() {
       setVendorWithMostInvoices(calculateVendorWithMostInvoices(data));
       setAverageInvoiceAmount(calculateAverageInvoiceAmount(data));
     });
-  }, [invoicesList]);
+  }, []);
 
   return (
     <div className='bg-neutral-100 min-h-screen flex relataive flex-col'>
@@ -140,13 +140,24 @@ export default function Home() {
           <h2 className='text-black text-xl font-semibold'>Invoices</h2>
           <Button color="primary" startContent={<PlusIcon />} onPress={() => router.push('/newInvoice')}>Add new invoice</Button>
         </div>
-        <div className='space-x-5 flex flex-row w-full justify-center'>
-          {overDueAmount !== 0 && <HomeCards icon="fi-rr-alarm-exclamation" color="#DFE3C7" title="Overdue amount" text={overDueAmount.toFixed(2).toString() + " RON"} />}
-          {unpaidTotals !== 0 && <HomeCards icon="fi-rs-sack-dollar" color="#e2d5f3" title="Unpaid totals" text={unpaidTotals.toFixed(2).toString() + " RON"} />}
-          {vendorWithMostInvoices && <HomeCards icon="fi-rr-seller" color="#f0e6e6" title="The vendor with the most invoices" text={vendorWithMostInvoices.charAt(0).toUpperCase() + vendorWithMostInvoices.slice(1)} />}
-          {averageInvoiceAmount && <HomeCards icon="fi-rr-payroll-calendar" color="#dce6f7" title="The average invoice cost" text={averageInvoiceAmount.toFixed(2).toString() + " RON"} />}
-          {invoicesList !== null && <SingleHomeCard totalInvoices={invoicesList.length} />}
-        </div>
+        {
+          invoicesList !== null && invoicesList.length > 0 ? (
+            <div className='space-x-5 flex flex-row w-full justify-center'>
+              <HomeCards icon="fi-rr-alarm-exclamation" color="#DFE3C7" title="Overdue amount" text={overDueAmount.toFixed(2).toString() + " RON"} />
+              <HomeCards icon="fi-rs-sack-dollar" color="#e2d5f3" title="Unpaid totals" text={unpaidTotals.toFixed(2).toString() + " RON"} />
+              <HomeCards icon="fi-rr-seller" color="#f0e6e6" title="The vendor with the most invoices" text={vendorWithMostInvoices.charAt(0).toUpperCase() + vendorWithMostInvoices.slice(1)} />
+              <HomeCards icon="fi-rr-payroll-calendar" color="#dce6f7" title="The average invoice cost" text={averageInvoiceAmount.toFixed(2).toString() + " RON"} />
+              <SingleHomeCard totalInvoices={invoicesList.length} />
+            </div>
+          ) : (
+            <div className='space-x-5 flex flex-row w-full justify-center'>
+              <HomeCards icon="fi-rr-alarm-exclamation" color="#DFE3C7" title="Overdue amount" text="0 RON"/>
+              <HomeCards icon="fi-rs-sack-dollar" color="#e2d5f3" title="Unpaid totals" text="0 RON"/>
+              <HomeCards icon="fi-rr-seller" color="#f0e6e6" title="The vendor with the most invoices" text="None" />
+              <HomeCards icon="fi-rr-payroll-calendar" color="#dce6f7" title="The average invoice cost" text="0 RON"/>
+            </div>
+          )
+        }
         <div className=" p-4 rounded-2xl border-2 border-neutral-100">
           {invoicesList !== null && <TableContent invoicesList={invoicesList} />}
         </div>
