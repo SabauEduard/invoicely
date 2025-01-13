@@ -41,15 +41,16 @@ class InvoiceService:
         time.sleep(5)
             
         # extract the content of the file and determine the category
-        category_id, content = detect_category(str(original_file_path), str(copy_file_path), file_type)
+        category, content = detect_category(str(original_file_path), str(copy_file_path), file_type)
         
-        print(category_id, content)
+        print(category, content)
             
         # delete the copy file
         # os.remove(copy_file_path)
 
-        invoice_create_dto.category = category_id
+        invoice_create_dto.category = category
         invoice_create_dto.path = original_file_path
+        invoice_create_dto.content = content
         invoice_create_dto.duplicate = False
         invoice_create_dto.incomplete = False
 
