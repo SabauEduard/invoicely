@@ -84,7 +84,6 @@ export default function newInvoice() {
         setDragActive(false);
 
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-            console.log(e.dataTransfer.files[0])
             setValue("invoice", e.dataTransfer.files[0]);
             setFile(e.dataTransfer.files[0]);
         }
@@ -95,7 +94,6 @@ export default function newInvoice() {
     };
 
     const handleSelectionChange = (selectedKey) => {
-        console.log("new selection", selectedKey);
         if (selectedKey !== null) {
             selectedTags.push(selectedKey);
             setOptions((prevOptions) =>
@@ -144,9 +142,6 @@ export default function newInvoice() {
     };
 
     const onSubmit = (data) => {
-        console.log(data);
-        console.log(selectedTags);
-
         const formData = new FormData();
 
         formData.append('vendor', data.vendor);
@@ -158,7 +153,7 @@ export default function newInvoice() {
         formData.append('name', data.name);
         formData.append('notes', data.notes);
         selectedTags.forEach(tag => formData.append('tags', tag));
-        formData.append('file', data.invoice);
+        formData.append('file', data.invoice[0]);
 
         const sendFormData = async () => {
             try {
@@ -176,15 +171,15 @@ export default function newInvoice() {
                 });
 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+                
                 setAlertTitle('Success');
                 setAlertDescription('Invoice created successfully');
                 setAlertColor('success');
                 setSuccessfullySubmitted(true);
 
             } catch (error) {
-                console.log(error);
-
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+                
                 setAlertTitle('Error');
                 setAlertDescription('An error occurred while creating the invoice');
                 setAlertColor('danger');
@@ -219,6 +214,16 @@ export default function newInvoice() {
             router.push('/homepage'); // Redirecționează către pagina principală
         }
     }, [progressValue]);
+
+    useEffect(() => {
+        const subscription = watch((value, { name, type }) => {
+            if (name === "invoice" && value.invoice && value.invoice.length > 0) {
+                setFile(value.invoice[0]);
+            }
+        });
+
+        return () => subscription.unsubscribe();
+    }, [watch]);
 
     return (
         <div className='bg-neutral-100 min-h-screen flex flex-col'>
@@ -334,6 +339,7 @@ export default function newInvoice() {
                                     {dragActive && <div className="fixed w-screen h-screen top-0 left-0 right-0 bottom-0" onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}></div>}
                                     <label
                                         onDragEnter={(e) => handleDrag(e)}
+                                        htmlFor="invoice"
                                         style={{ backgroundColor: dragActive && "#f3f4f6" }}
                                         className="flex flex-col justify-center w-full h-full border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
                                         <div className='h-full flex flex-col items-center justify-center py-2'>
@@ -353,16 +359,13 @@ export default function newInvoice() {
                                             }
                                         </div>
 
-                                        <Input {...register('invoice')}
+                                        <input
+                                            {...register('invoice')}
                                             id='invoice'
                                             name='invoice'
                                             className='hidden'
-                                            label="invoice"
                                             type='file'
                                             multiple={false}
-                                            onChange={(e) => {
-                                                setFile(e.target.files[0]);
-                                            }}
                                         />
                                     </label>
                                 </div>

@@ -25,8 +25,6 @@ export default function Authentication() {
             password: data['parola-login'],
         };
 
-        console.log(body);
-
         try {
             const response = await loginApiCall(body);
             if (response === 200) {
@@ -54,8 +52,6 @@ export default function Authentication() {
                 password: data['password-register'],
                 role_id: 1,
             };
-
-            console.log("BOOOOOOODY", body);
 
             await api.post(REGISTER_URL, body,
                 {

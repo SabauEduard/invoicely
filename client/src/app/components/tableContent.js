@@ -259,8 +259,6 @@ export default function TableContent(props) {
                 const startDate = new Date(emissionDateFilter.start);
                 const endDate = new Date(emissionDateFilter.end);
 
-                console.log(emissionDate, startDate, endDate, emissionDate >= startDate && emissionDate <= endDate);
-
                 return emissionDate.getTime() >= startDate.getTime() && emissionDate.getTime() <= endDate.getTime();
             });
         }
