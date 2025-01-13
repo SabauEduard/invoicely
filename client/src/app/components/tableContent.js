@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
     Table,
     TableHeader,
@@ -52,47 +52,47 @@ export const categoriesOptions = [
     { name: "other", uid: "other" },
 ];
 
-export const invoices = [
-    {
-        id: 1,
-        name: "Factura curent",
-        category: "electricity",
-        vendor: "Enel",
-        amount: "200",
-        status: "paid",
-        importance: "low",
-        note: "Factura curenta pentru luna ianuarie.",
-        tags: ["apartament", "utilitati"],
-        emission_date: "2025-01-25",
-        due_date: "2025-02-25",
-    },
-    {
-        id: 2,
-        name: "Factura utilitati",
-        category: "electricity",
-        vendor: "Apaserv",
-        amount: "150",
-        status: "pending",
-        importance: "medium",
-        note: "Factura utilitati pentru mama",
-        tags: ["casa", "utilitati"],
-        emission_date: "2024-12-20",
-        due_date: "2025-01-20",
-    },
-    {
-        id: 3,
-        name: "Factura licenta windows",
-        category: "it",
-        vendor: "Microsoft",
-        amount: "50",
-        status: "overdue",
-        importance: "high",
-        note: "Factura licenta windows pentru laptop",
-        tags: ["laptop"],
-        emission_date: "2024-12-15",
-        due_date: "2025-01-15",
-    }
-];
+// export const invoices = [
+//     {
+//         id: 1,
+//         name: "Factura curent",
+//         category: "electricity",
+//         vendor: "Enel",
+//         amount: "200",
+//         status: "paid",
+//         importance: "low",
+//         note: "Factura curenta pentru luna ianuarie.",
+//         tags: ["apartament", "utilitati"],
+//         emission_date: "2025-01-25",
+//         due_date: "2025-02-25",
+//     },
+//     {
+//         id: 2,
+//         name: "Factura utilitati",
+//         category: "electricity",
+//         vendor: "Apaserv",
+//         amount: "150",
+//         status: "pending",
+//         importance: "medium",
+//         note: "Factura utilitati pentru mama",
+//         tags: ["casa", "utilitati"],
+//         emission_date: "2024-12-20",
+//         due_date: "2025-01-20",
+//     },
+//     {
+//         id: 3,
+//         name: "Factura licenta windows",
+//         category: "it",
+//         vendor: "Microsoft",
+//         amount: "50",
+//         status: "overdue",
+//         importance: "high",
+//         note: "Factura licenta windows pentru laptop",
+//         tags: ["laptop"],
+//         emission_date: "2024-12-15",
+//         due_date: "2025-01-15",
+//     }
+// ];
 
 export function capitalize(s) {
     return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : "";
@@ -207,7 +207,7 @@ const importanceColorMap = {
 
 const INITIAL_VISIBLE_COLUMNS = ["name", "category", "vendor", "amount", "status", "tags", "importance", "actions"];
 
-export default function TableContent() {
+export default function TableContent(props) {
     const [filterValue, setFilterValue] = React.useState("");
     const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
     const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
@@ -232,7 +232,7 @@ export default function TableContent() {
     }, [visibleColumns]);
 
     const filteredItems = React.useMemo(() => {
-        let filteredInvoices = [...invoices];
+        let filteredInvoices = [...props.invoicesList];
 
         if (hasSearchFilter) {
             filteredInvoices = filteredInvoices.filter((invoice) => {
@@ -282,7 +282,7 @@ export default function TableContent() {
         }
 
         return filteredInvoices;
-    }, [invoices, filterValue, statusFilter, importanceFilter, emissionDateFilter, dueDateFilter, categoryFilter]);
+    }, [props.invoicesList, filterValue, statusFilter, importanceFilter, emissionDateFilter, dueDateFilter, categoryFilter]);
 
     const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -482,7 +482,7 @@ export default function TableContent() {
                     </div>
                 </div>
                 <div className="w-full flex justify-between items-start">
-                    <span className="text-default-400 text-small">Total {invoices.length} invoices</span>
+                    <span className="text-default-400 text-small">Total {props.invoicesList.length} invoices</span>
                     <div className="flex gap-2 items-center">
                         <DateRangePicker value={emissionDateFilter} onChange={setEmissionDateFilter} className="max-w-xs" label="Emission date" />
                         <DateRangePicker value={dueDateFilter} onChange={setDueDateFilter} className="max-w-xs" label="Due date" />
@@ -504,7 +504,7 @@ export default function TableContent() {
         dueDateFilter,
         categoryFilter,
         visibleColumns,
-        invoices.length,
+        props.invoicesList.length,
         onSearchChange,
         hasSearchFilter,
     ]);
