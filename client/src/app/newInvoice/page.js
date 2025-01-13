@@ -36,7 +36,7 @@ export const importance = [
 
 export const status = [
     { label: "paid", key: "paid" },
-    { label: "unpaid", key: "unpaid" },
+    { label: "pending", key: "pending" },
     { label: "overdue", key: "overdue" },
 ]
 
