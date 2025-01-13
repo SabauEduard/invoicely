@@ -13,7 +13,4 @@ class TagDTO(BaseModel):
 
 
 class TagCreateDTO(BaseModel):
-    names: List[str] = Field(default_factory=list, alias="names")
-
-    def to_tags(self):
-        return [Tag(name=name) for name in self.names]
+    tags: List[str] = Field(None, alias="tags")

@@ -1,6 +1,7 @@
 from fastapi import UploadFile, Form, File
 
 from enums.category import InvoiceCategory
+from enums.importance import Importance
 from pydantic import Field, BaseModel, model_validator, json
 from typing import Optional
 
@@ -12,12 +13,12 @@ class InvoiceDTO(BaseModel):
     id: int = Field(..., alias="id")
     name: str = Field(..., alias="name")
     user_id: int = Field(..., alias="user_id")
-    category: str = Field(..., alias="category")
+    category: InvoiceCategory = Field(..., alias="category")
     path: str = Field(..., alias="path")
     vendor: str = Field(..., alias="vendor")
     amount: float = Field(..., alias="amount")
     status: str = Field(..., alias="status")
-    importance: int = Field(..., alias="importance")
+    importance: Importance = Field(..., alias="importance")
     notes: str = Field(None, alias="notes")
     duplicate: bool = Field(..., alias="duplicate")
     incomplete: bool = Field(None, alias="incomplete")
@@ -47,11 +48,11 @@ class InvoiceDTO(BaseModel):
 class InvoiceCreateDTO(BaseModel):
     name: str = Field(..., alias="name")
     user_id: Optional[int] = Field(None, alias="user_id")
-    category: str = Field(None, alias="category")
+    category: InvoiceCategory = Field(None, alias="category")
     vendor: str = Field(..., alias="vendor")
     amount: float = Field(..., alias="amount")
     status: str = Field(..., alias="status")
-    importance: int = Field(..., alias="importance")
+    importance: Importance = Field(..., alias="importance")
     notes: str = Field(None, alias="notes")
     duplicate: bool = Field(None, alias="duplicate")
     incomplete: bool = Field(None, alias="incomplete")
@@ -69,7 +70,7 @@ class InvoiceCreateDTO(BaseModel):
             vendor: str = Form(...),
             amount: float = Form(...),
             status: str = Form(...),
-            importance: int = Form(...),
+            importance: str = Form(...),
             notes: str = Form(None),
             emission_date: str = Form(...),
             due_date: str = Form(...),
@@ -96,7 +97,7 @@ class InvoiceCreateDTO(BaseModel):
             vendor=self.vendor,
             amount=self.amount,
             status=self.status,
-            importance=self.importance,
+            importance=Importance(self.importance),
             notes=self.notes,
             duplicate=self.duplicate,
             incomplete=self.incomplete,

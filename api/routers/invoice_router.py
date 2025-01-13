@@ -1,6 +1,6 @@
-from typing import List
+from typing import List, Optional
 
-from fastapi import APIRouter, Depends, UploadFile, File
+from fastapi import APIRouter, Depends, UploadFile, File, Form
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
@@ -49,12 +49,11 @@ async def get_invoice(invoice_id: int, db: AsyncSession = Depends(get_db), user:
         201: {"description": "Invoice created successfully"},
     }
 )
-async def create_invoice(invoice_create_dto: InvoiceCreateDTO = Depends(InvoiceCreateDTO.as_form), tags_dto: TagCreateDTO = TagCreateDTO(), db: AsyncSession = Depends(get_db), user: UserDTO = Depends(get_current_user)):
+async def create_invoice(invoice_create_dto: InvoiceCreateDTO = Depends(InvoiceCreateDTO.as_form), tags: Optional[List[str]] = Form(None), db: AsyncSession = Depends(get_db), user: UserDTO = Depends(get_current_user)):
     print("sui")
     print(invoice_create_dto)
-    print(tags_dto)
+    print(tags)
     
-    return HttpResponse(status=201)
     return await InvoiceService.create(invoice_create_dto, db, user)
 
 @invoice_router.put(

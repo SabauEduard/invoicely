@@ -3,6 +3,7 @@ from sqlalchemy.types import DECIMAL, TEXT
 from sqlalchemy.orm import relationship
 from database import Base
 from enums.category import InvoiceCategory
+from enums.importance import Importance
 
 invoice_tags = Table(
     'invoice_tags',
@@ -32,7 +33,7 @@ class Invoice(Base):
     
     content = Column(Text, nullable=True)
 
-    importance = Column(Integer, nullable=False)
+    importance = Column(Enum(Importance), nullable=False)
 
     notes = Column(String(256), nullable=True)
 

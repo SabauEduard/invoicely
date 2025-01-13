@@ -24,15 +24,15 @@ export const overDueList = [
 ]
 
 export const importance = [
-    { label: "Low", key: "low" },
-    { label: "Medium", key: "medium" },
-    { label: "High", key: "high" },
+    { label: "low", key: "low" },
+    { label: "medium", key: "medium" },
+    { label: "high", key: "high" },
 ]
 
 export const status = [
-    { label: "Paid", key: "paid" },
-    { label: "Unpaid", key: "unpaid" },
-    { label: "Overdue", key: "overdue" },
+    { label: "paid", key: "paid" },
+    { label: "unpaid", key: "unpaid" },
+    { label: "overdue", key: "overdue" },
 ]
 
 export default function newInvoice() {
@@ -142,13 +142,12 @@ export default function newInvoice() {
         formData.append('amount', data.amount);
         formData.append('importance', data.importance);
         formData.append('status', data.status);
-        formData.append('emissionDate', data.emissionDate);
-        formData.append('dueDate', data.dueDate);
+        formData.append('emission_date', data.emissionDate);
+        formData.append('due_date', data.dueDate);
         formData.append('name', data.name);
         formData.append('notes', data.notes);
-        formData.append('tags', selectedTags);
-        formData.append('invoice', data.invoice[0]);
-
+        selectedTags.forEach(tag => formData.append('tags', tag));
+        formData.append('file', data.invoice);
 
         const sendFormData = async () => {
             const result = await api.post('/invoices/', formData, {
@@ -284,7 +283,6 @@ export default function newInvoice() {
                                         id='invoice' 
                                         name='invoice' 
                                         className='hidden'
-                                        isRequired 
                                         label="invoice" 
                                         type='file'
                                         multiple={false}

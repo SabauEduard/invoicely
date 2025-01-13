@@ -30,8 +30,8 @@ class InvoiceService:
         file_type = invoice_create_dto.file.content_type
         content = await invoice_create_dto.file.read()
         
-        # os.makedirs(os.path.dirname(original_file_path), exist_ok=True)
-        # os.makedirs(os.path.dirname(copy_file_path), exist_ok=True)
+        os.makedirs(os.path.dirname(original_file_path), exist_ok=True)
+        os.makedirs(os.path.dirname(copy_file_path), exist_ok=True)
         
         with open(original_file_path, "wb") as file_object:
             file_object.write(content)
