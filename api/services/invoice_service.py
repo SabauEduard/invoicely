@@ -46,7 +46,7 @@ class InvoiceService:
         print(category, content)
             
         # delete the copy file
-        # os.remove(copy_file_path)
+        os.remove(copy_file_path)
 
         invoice_create_dto.category = category
         invoice_create_dto.path = original_file_path
