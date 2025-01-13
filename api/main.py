@@ -36,6 +36,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
 app.include_router(user_router, prefix="/users")
 app.include_router(auth_router, prefix="/auth")
 app.include_router(role_router, prefix="/roles", dependencies=[Depends(get_current_user)])

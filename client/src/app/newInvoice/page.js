@@ -227,7 +227,7 @@ export default function newInvoice() {
 
     return (
         <div className='bg-neutral-100 min-h-screen flex flex-col'>
-            <Header overDueList={overDueList} />
+            <Header visibleNotification={false} />
             <div
                 className="bg-white px-10 py-8 rounded-l-3xl ml-20 mb-10 space-y-8">
                 <div className="w-full flex items-center justify-between">

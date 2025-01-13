@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 export default function Logo() {
     return (
-        <Link href="/" className="flex flex-row items-center space-x-2">
+        <Link href="/homepage" className="flex flex-row items-center space-x-2">
             <Image
                 src="/invoice2.png"
                 width={40}

@@ -25,6 +25,7 @@ import {
 } from "@nextui-org/react";
 import api from "../api/api";
 import { useRouter } from "next/navigation";
+import { DrawerComponent } from "./drawerComponent";
 export const columns = [
     { name: "STATUS", "uid": "status", sortable: true },
     { name: "NAME", "uid": "name", sortable: true },
@@ -59,48 +60,6 @@ export const categoriesOptions = [
     { name: "phone", uid: "phone" },
     { name: "other", uid: "other" },
 ];
-
-// export const invoices = [
-//     {
-//         id: 1,
-//         name: "Factura curent",
-//         category: "electricity",
-//         vendor: "Enel",
-//         amount: "200",
-//         status: "paid",
-//         importance: "low",
-//         note: "Factura curenta pentru luna ianuarie.",
-//         tags: ["apartament", "utilitati"],
-//         emission_date: "2025-01-25",
-//         due_date: "2025-02-25",
-//     },
-//     {
-//         id: 2,
-//         name: "Factura utilitati",
-//         category: "electricity",
-//         vendor: "Apaserv",
-//         amount: "150",
-//         status: "pending",
-//         importance: "medium",
-//         note: "Factura utilitati pentru mama",
-//         tags: ["casa", "utilitati"],
-//         emission_date: "2024-12-20",
-//         due_date: "2025-01-20",
-//     },
-//     {
-//         id: 3,
-//         name: "Factura licenta windows",
-//         category: "it",
-//         vendor: "Microsoft",
-//         amount: "50",
-//         status: "overdue",
-//         importance: "high",
-//         note: "Factura licenta windows pentru laptop",
-//         tags: ["laptop"],
-//         emission_date: "2024-12-15",
-//         due_date: "2025-01-15",
-//     }
-// ];
 
 export function capitalize(s) {
     return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : "";
@@ -216,7 +175,27 @@ const importanceColorMap = {
 const INITIAL_VISIBLE_COLUMNS = ["name", "category", "vendor", "amount", "status", "tags", "importance", "actions"];
 
 export default function TableContent(props) {
+    const handleOpenDrawer = (notificare) => {
+        console.log("DESCHIDEEEEE", notificare);
+        setPopoverOpen(false);
+        setSelectedNotificare(notificare);
+        setIsOpenDrawer(true);
+        setNotificareToSend(notificare);
+    };
+
+    const handleCloseDrawer = () => {
+        setIsOpenDrawer(false);
+        setSelectedNotificare(null);
+        setNotificareToSend(null);
+    };
+
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+    const [isOpenDrawer, setIsOpenDrawer] = React.useState(false);
+    const [selectedNotificare, setSelectedNotificare] = React.useState(null);
+    const [size] = React.useState("4xl");
+    const [popoverOpen, setPopoverOpen] = React.useState(false);
+    const [notificareToSend, setNotificareToSend] = React.useState(null);
 
     const [filterValue, setFilterValue] = React.useState("");
     const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
@@ -227,6 +206,7 @@ export default function TableContent(props) {
     const [dueDateFilter, setDueDateFilter] = React.useState(null);
     const [categoryFilter, setCategoryFilter] = React.useState("all");
     const [invoices, setInvoices] = React.useState(props.invoicesList || []);
+    const [openViewwer, setOpenViewer] = React.useState(false);
     const [sortDescriptor, setSortDescriptor] = React.useState({
         column: "age",
         direction: "ascending",
@@ -368,7 +348,7 @@ export default function TableContent(props) {
                                 </Button>
                             </DropdownTrigger>
                             <DropdownMenu>
-                                <DropdownItem key="view">View</DropdownItem>
+                                <DropdownItem key="view" color="primary" onPress={() => { handleOpenDrawer(item) }}>View</DropdownItem>
                                 <DropdownItem key="edit">Edit</DropdownItem>
                                 <DropdownItem key="delete" className="text-danger" color="danger" onPress={() => handleDeleteInvoice(item.id)}>
                                     Delete
@@ -567,39 +547,49 @@ export default function TableContent(props) {
     }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
 
     return (
-        props.invoicesList && <Table
-            isHeaderSticky
-            aria-label="Example table with custom cells, pagination and sorting"
-            bottomContent={bottomContent}
-            bottomContentPlacement="outside"
-            selectedKeys={selectedKeys}
-            selectionMode="multiple"
-            sortDescriptor={sortDescriptor}
-            topContent={topContent}
-            topContentPlacement="outside"
-            onSelectionChange={setSelectedKeys}
-            onSortChange={setSortDescriptor}
-        >
-            <TableHeader columns={headerColumns}>
-                {(column) => (
-                    <TableColumn
-                        key={column.uid}
-                        align={column.uid === "actions" ? "center" : "start"}
-                        allowsSorting={column.sortable}
-                    >
-                        {column.name}
-                    </TableColumn>
-                )}
-            </TableHeader>
-            <TableBody emptyContent={"No invoices found"} items={sortedItems}
+        <>
+            props.invoicesList && <Table
+                isHeaderSticky
+                aria-label="Example table with custom cells, pagination and sorting"
+                bottomContent={bottomContent}
+                bottomContentPlacement="outside"
+                selectedKeys={selectedKeys}
+                selectionMode="multiple"
+                sortDescriptor={sortDescriptor}
+                topContent={topContent}
+                topContentPlacement="outside"
+                onSelectionChange={setSelectedKeys}
+                onSortChange={setSortDescriptor}
             >
-                {(item) => (
-                    <TableRow key={item.id}>
-                        {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
-                    </TableRow>
-                )}
-            </TableBody>
-        </Table>
+                <TableHeader columns={headerColumns}>
+                    {(column) => (
+                        <TableColumn
+                            key={column.uid}
+                            align={column.uid === "actions" ? "center" : "start"}
+                            allowsSorting={column.sortable}
+                        >
+                            {column.name}
+                        </TableColumn>
+                    )}
+                </TableHeader>
+                <TableBody emptyContent={"No invoices found"} items={sortedItems}
+                >
+                    {(item) => (
+                        <TableRow key={item.id}>
+                            {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+                        </TableRow>
+                    )}
+                </TableBody>
+            </Table>
+            {notificareToSend &&
+                <DrawerComponent
+                    isOpen={isOpenDrawer}
+                    size={size}
+                    onClose={handleCloseDrawer}
+                    notificare={notificareToSend}
+                />
+            }
+        </>
     );
 }
 
