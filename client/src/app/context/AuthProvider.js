@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, use, useState, useContext } from "react";
+import { createContext, use, useState, useContext, useEffect } from "react";
 import api from "../api/api";
 
 const AuthContext = createContext({});
@@ -8,10 +8,14 @@ const LOGIN_URL = '/auth/login';
 const ME_URL = '/auth/current-user';
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(() => {
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
         const user = localStorage.getItem('user');
-        return user ? JSON.parse(user) : null;
-    });
+        if (user) {
+            setUser(JSON.parse(user));
+        }
+    }, []);
 
     const loginApiCall = async (payload) => {
         try {
@@ -22,7 +26,6 @@ export const AuthProvider = ({ children }) => {
                     },
                     withCredentials: true,
                 });
-
             const token = response.data.access_token;
 
             const user_response = await api.get(ME_URL,
@@ -32,7 +35,7 @@ export const AuthProvider = ({ children }) => {
 
             setUser(user_response.data);
             localStorage.setItem('user', JSON.stringify(user_response.data));
-            return user_response.data;
+            return response.status;
         } catch (error) {
             throw error;
         }

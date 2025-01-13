@@ -14,7 +14,6 @@ import {
 export const DrawerComponent = ({ isOpen, size, onClose, notificare }) => {
 
     return (
-        console.log(notificare),
         notificare &&
         <Drawer isOpen={isOpen} size={size} onClose={onClose}>
             <DrawerContent>
