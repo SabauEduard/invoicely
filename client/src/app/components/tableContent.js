@@ -15,8 +15,16 @@ import {
     Chip,
     Pagination,
     DateRangePicker,
+    useDisclosure,
+    Modal,
+    ModalContent,
+    ModalHeader,
+    ModalBody,
+    ModalFooter,
+    user,
 } from "@nextui-org/react";
-
+import api from "../api/api";
+import { useRouter } from "next/navigation";
 export const columns = [
     { name: "STATUS", "uid": "status", sortable: true },
     { name: "NAME", "uid": "name", sortable: true },
@@ -25,7 +33,7 @@ export const columns = [
     { name: "AMOUNT", "uid": "amount", sortable: true },
     { name: "IMPORTANCE", "uid": "importance", sortable: true },
     { name: "NOTE", "uid": "note" },
-    { name: "TAGS", "uid": "tags" },
+    // { name: "TAGS", "uid": "tags" },
     { name: "EMISSION DATE", "uid": "emission_date", sortable: true },
     { name: "DUE DATE", "uid": "due_date", sortable: true },
     { name: "ACTIONS", "uid": "actions" },
@@ -208,6 +216,8 @@ const importanceColorMap = {
 const INITIAL_VISIBLE_COLUMNS = ["name", "category", "vendor", "amount", "status", "tags", "importance", "actions"];
 
 export default function TableContent(props) {
+    const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
     const [filterValue, setFilterValue] = React.useState("");
     const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
     const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
@@ -216,12 +226,14 @@ export default function TableContent(props) {
     const [emissionDateFilter, setEmissionDateFilter] = React.useState(null);
     const [dueDateFilter, setDueDateFilter] = React.useState(null);
     const [categoryFilter, setCategoryFilter] = React.useState("all");
+    const [invoices, setInvoices] = React.useState(props.invoicesList);
     const [sortDescriptor, setSortDescriptor] = React.useState({
         column: "age",
         direction: "ascending",
     });
     const [page, setPage] = React.useState(1);
 
+    const router = useRouter();
     const hasSearchFilter = Boolean(filterValue);
     const rowsPerPage = 10;
 
@@ -231,8 +243,8 @@ export default function TableContent(props) {
         return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
     }, [visibleColumns]);
 
-    const filteredItems = React.useMemo(() => {
-        let filteredInvoices = [...props.invoicesList];
+    const filteredInvoices = React.useMemo(() => {
+        let filteredInvoices = invoices;
 
         if (hasSearchFilter) {
             filteredInvoices = filteredInvoices.filter((invoice) => {
@@ -280,16 +292,16 @@ export default function TableContent(props) {
         }
 
         return filteredInvoices;
-    }, [props.invoicesList, filterValue, statusFilter, importanceFilter, emissionDateFilter, dueDateFilter, categoryFilter]);
+    }, [invoices, filterValue, statusFilter, importanceFilter, emissionDateFilter, dueDateFilter, categoryFilter]);
 
-    const pages = Math.ceil(filteredItems.length / rowsPerPage);
+    const pages = Math.ceil(filteredInvoices.length / rowsPerPage);
 
     const items = React.useMemo(() => {
         const start = (page - 1) * rowsPerPage;
         const end = start + rowsPerPage;
 
-        return filteredItems.slice(start, end);
-    }, [page, filteredItems, rowsPerPage]);
+        return filteredInvoices.slice(start, end);
+    }, [page, filteredInvoices, rowsPerPage]);
 
     const sortedItems = React.useMemo(() => {
         return [...items].sort((a, b) => {
@@ -301,13 +313,28 @@ export default function TableContent(props) {
         });
     }, [sortDescriptor, items]);
 
-    const renderCell = React.useCallback((user, columnKey) => {
-        const cellValue = user[columnKey];
+    const handleDeleteInvoice = async (id) => {
+        try {
+            const result = await api.delete(`/invoices/${id}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                withCredentials: true,
+            });
+
+            setInvoices((prevInvoices) => prevInvoices.filter((invoice) => invoice.id !== id));
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const renderCell = React.useCallback((item, columnKey) => {
+        const cellValue = item[columnKey];
 
         switch (columnKey) {
             case "status":
                 return (
-                    <Chip className="capitalize" color={statusColorMap[user.status]} size="sm" variant="flat">
+                    <Chip className="capitalize" color={statusColorMap[item.status]} size="sm" variant="flat">
                         {cellValue}
                     </Chip>
                 );
@@ -343,7 +370,9 @@ export default function TableContent(props) {
                             <DropdownMenu>
                                 <DropdownItem key="view">View</DropdownItem>
                                 <DropdownItem key="edit">Edit</DropdownItem>
-                                <DropdownItem key="delete">Delete</DropdownItem>
+                                <DropdownItem key="delete" className="text-danger" color="danger" onPress={() => handleDeleteInvoice(item.id)}>
+                                    Delete
+                                </DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
                     </div>
@@ -480,7 +509,7 @@ export default function TableContent(props) {
                     </div>
                 </div>
                 <div className="w-full flex justify-between items-start">
-                    <span className="text-default-400 text-small">Total {props.invoicesList.length} invoices</span>
+                    <span className="text-default-400 text-small">Total {filteredInvoices.length} invoices</span>
                     <div className="flex gap-2 items-center">
                         <DateRangePicker value={emissionDateFilter} onChange={setEmissionDateFilter} className="max-w-xs" label="Emission date" />
                         <DateRangePicker value={dueDateFilter} onChange={setDueDateFilter} className="max-w-xs" label="Due date" />
@@ -495,6 +524,7 @@ export default function TableContent(props) {
             </div>
         );
     }, [
+        filteredInvoices,
         filterValue,
         statusFilter,
         importanceFilter,
@@ -513,7 +543,7 @@ export default function TableContent(props) {
                 <span className="w-[30%] text-small text-default-400">
                     {selectedKeys === "all"
                         ? "All items selected"
-                        : `${selectedKeys.size} of ${filteredItems.length} selected`}
+                        : `${selectedKeys.size} of ${filteredInvoices.length} selected`}
                 </span>
                 <Pagination
                     isCompact

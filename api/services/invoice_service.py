@@ -38,8 +38,6 @@ class InvoiceService:
         with open(copy_file_path, "wb") as file_object:
             file_object.write(content)
             
-        time.sleep(5)
-            
         # extract the content of the file and determine the category
         category, content = detect_category(str(original_file_path), str(copy_file_path), file_type)
         
