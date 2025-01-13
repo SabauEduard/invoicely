@@ -6,7 +6,7 @@ from enums.status import InvoiceStatus
 from pydantic import Field, BaseModel, model_validator, json
 from typing import Optional
 
-from models.invoice import Invoice
+from models.invoice import Invoice, InvoiceBuilder
 from datetime import datetime
 
 
@@ -89,19 +89,22 @@ class InvoiceCreateDTO(BaseModel):
         )
 
     def to_invoice(self):
-        return Invoice(
-            name=self.name,
-            user_id=self.user_id,
-            category=InvoiceCategory(self.category),
-            path=self.path,
-            content=self.content,
-            vendor=self.vendor,
-            amount=self.amount,
-            status=self.status,
-            importance=Importance(self.importance),
-            notes=self.notes,
-            duplicate=self.duplicate,
-            incomplete=self.incomplete,
-            emission_date=datetime.strptime(self.emission_date, "%Y-%m-%d") if self.emission_date else None,
-            due_date=datetime.strptime(self.due_date, "%Y-%m-%d") if self.due_date else None
+        invoice = (
+            InvoiceBuilder()
+            .with_name(self.name)
+            .with_user_id(self.user_id)
+            .with_category(InvoiceCategory(self.category))
+            .with_path(self.path)
+            .with_content(self.content)
+            .with_vendor(self.vendor)
+            .with_amount(self.amount)
+            .with_status(self.status)
+            .with_importance(Importance(self.importance))
+            .with_notes(self.notes)
+            .with_duplicate(self.duplicate)
+            .with_incomplete(self.incomplete)
+            .with_emission_date(datetime.strptime(self.emission_date, "%Y-%m-%d") if self.emission_date else None)
+            .with_due_date(datetime.strptime(self.due_date, "%Y-%m-%d") if self.due_date else None)
+            .build()
         )
+        return invoice

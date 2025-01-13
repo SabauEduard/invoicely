@@ -49,3 +49,67 @@ class Invoice(Base):
     user = relationship("User", back_populates="invoices")
 
     tags = relationship("Tag", secondary=invoice_tags)
+
+
+class InvoiceBuilder:
+    def __init__(self):
+        self.invoice = Invoice()
+
+    def with_name(self, name):
+        self.invoice.name = name
+        return self
+
+    def with_user_id(self, user_id):
+        self.invoice.user_id = user_id
+        return self
+
+    def with_category(self, category):
+        self.invoice.category = category
+        return self
+
+    def with_path(self, path):
+        self.invoice.path = path
+        return self
+
+    def with_vendor(self, vendor):
+        self.invoice.vendor = vendor
+        return self
+
+    def with_amount(self, amount):
+        self.invoice.amount = amount
+        return self
+
+    def with_status(self, status):
+        self.invoice.status = status
+        return self
+
+    def with_importance(self, importance):
+        self.invoice.importance = importance
+        return self
+
+    def with_notes(self, notes):
+        self.invoice.notes = notes
+        return self
+
+    def with_duplicate(self, duplicate):
+        self.invoice.duplicate = duplicate
+        return self
+
+    def with_incomplete(self, incomplete):
+        self.invoice.incomplete = incomplete
+        return self
+
+    def with_emission_date(self, emission_date):
+        self.invoice.emission_date = emission_date
+        return self
+
+    def with_due_date(self, due_date):
+        self.invoice.due_date = due_date
+        return self
+
+    def with_content(self, content):
+        self.invoice.content = content
+        return self
+
+    def build(self):
+        return self.invoice
