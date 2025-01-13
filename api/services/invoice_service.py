@@ -26,12 +26,12 @@ class InvoiceService:
         original_file_path = Path() / (f"uploads/{user.id}/categorie/{invoice_create_dto.vendor}/{invoice_create_dto.file.filename}")
         # File used for processing and it will be altered during the process and deleted after
         copy_file_path = Path() / (f"uploads/{user.id}/categorie/{invoice_create_dto.vendor}/copy_{invoice_create_dto.file.filename}")
-        
+        print(original_file_path)
         file_type = invoice_create_dto.file.content_type
         content = await invoice_create_dto.file.read()
         
-        # os.makedirs(os.path.dirname(original_file_path), exist_ok=True)
-        # os.makedirs(os.path.dirname(copy_file_path), exist_ok=True)
+        os.makedirs(os.path.dirname(original_file_path), exist_ok=True)
+        os.makedirs(os.path.dirname(copy_file_path), exist_ok=True)
         
         with open(original_file_path, "wb") as file_object:
             file_object.write(content)

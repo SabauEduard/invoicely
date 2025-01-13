@@ -54,7 +54,6 @@ async def create_invoice(invoice_create_dto: InvoiceCreateDTO = Depends(InvoiceC
     print(invoice_create_dto)
     print(tags_dto)
     
-    return HttpResponse(status=201)
     return await InvoiceService.create(invoice_create_dto, db, user)
 
 @invoice_router.put(
