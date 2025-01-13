@@ -9,6 +9,10 @@ from models.invoice import Invoice
 from dtos.invoice_dtos import InvoiceDTO, InvoiceCreateDTO
 from repositories.invoice_repository import InvoiceRepository
 from routers.auth_router import get_current_user
+from ml_utils.category_detection import detect_category
+from pathlib import Path
+import time 
+from PIL import Image
 
 class InvoiceService:
 
@@ -19,13 +23,34 @@ class InvoiceService:
         '''
         invoice_create_dto.user_id = user.id
 
-        file_path = f"uploads/{user.id}/categorie/{invoice_create_dto.vendor}/{invoice_create_dto.file.filename}"
-        os.makedirs(os.path.dirname(file_path), exist_ok=True)
-        with open(file_path, "wb") as file_object:
-            file_object.write(await invoice_create_dto.file.read())
+        original_file_path = Path() / (f"uploads/{user.id}/categorie/{invoice_create_dto.vendor}/{invoice_create_dto.file.filename}")
+        # File used for processing and it will be altered during the process and deleted after
+        copy_file_path = Path() / (f"uploads/{user.id}/categorie/{invoice_create_dto.vendor}/copy_{invoice_create_dto.file.filename}")
+        
+        file_type = invoice_create_dto.file.content_type
+        content = await invoice_create_dto.file.read()
+        
+        # os.makedirs(os.path.dirname(original_file_path), exist_ok=True)
+        # os.makedirs(os.path.dirname(copy_file_path), exist_ok=True)
+        
+        with open(original_file_path, "wb") as file_object:
+            file_object.write(content)
+        with open(copy_file_path, "wb") as file_object:
+            file_object.write(content)
+            
+        time.sleep(5)
+            
+        # extract the content of the file and determine the category
+        category, content = detect_category(str(original_file_path), str(copy_file_path), file_type)
+        
+        print(category, content)
+            
+        # delete the copy file
+        # os.remove(copy_file_path)
 
-        invoice_create_dto.category = 1
-        invoice_create_dto.path = file_path
+        invoice_create_dto.category = category
+        invoice_create_dto.path = original_file_path
+        invoice_create_dto.content = content
         invoice_create_dto.duplicate = False
         invoice_create_dto.incomplete = False
 

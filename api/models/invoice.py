@@ -1,5 +1,5 @@
-from sqlalchemy import Column, String, Integer, ForeignKey, Boolean, Enum, DateTime, Table
-from sqlalchemy.types import DECIMAL
+from sqlalchemy import Column, String, Text, Integer, ForeignKey, Boolean, Enum, DateTime, Table
+from sqlalchemy.types import DECIMAL, TEXT
 from sqlalchemy.orm import relationship
 from database import Base
 from enums.category import InvoiceCategory
@@ -20,7 +20,7 @@ class Invoice(Base):
 
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
 
-    category = Column(Enum(InvoiceCategory))
+    category = Column(Enum(InvoiceCategory), nullable=False)
 
     path = Column(String(256), nullable=False)
 
@@ -29,6 +29,8 @@ class Invoice(Base):
     amount = Column(DECIMAL(10, 2), nullable=False)
 
     status = Column(String(32), nullable=False)
+    
+    content = Column(Text, nullable=True)
 
     importance = Column(Integer, nullable=False)
 

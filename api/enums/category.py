@@ -1,6 +1,9 @@
 from enum import Enum
 
 class InvoiceCategory(Enum):
-    INCOME = 1
-    EXPENSE = 2
-    TRANSFER = 3
+    CONSUMABLES = "consumables"
+    ELECTRICITY = "electricity"
+    IT = "it"
+    OTHER = "other"
+    PHONE = "phone"
+    REPAIRS = "repairs"
