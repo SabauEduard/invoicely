@@ -10,12 +10,16 @@ import {
     DatePicker,
     Chip,
     Textarea,
-    Alert
+    Alert,
+    Spinner,
+    Progress
 } from "@nextui-org/react";
 import React, { useState, useEffect, useRef } from 'react';
 import { Header } from '../components/header.js';
-import { useForm } from 'react-hook-form';
+import { set, useForm } from 'react-hook-form';
 import api from '../api/api';
+import { progress } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
 export const overDueList = [
     { id: 1, status: 'Overdue', name: 'Factura licenta windows', vendor: 'Microsoft', amount: '20050 RON', emissionDate: '2024-12-20', dueDate: '2025-01-15', importance: 'high', note: 'Avem aici una bucata factura la licenta de windows nu mai umblati cu windows crackuit', tags: ['laptop'] },
@@ -41,6 +45,11 @@ export default function newInvoice() {
     const [dragActive, setDragActive] = React.useState(false);
     const [file, setFile] = React.useState(null);
     const [selectedTags, setSelectedTags] = useState([]);
+    const [alert_title, setAlertTitle] = useState('');
+    const [alert_description, setAlertDescription] = useState('');
+    const [alert_color, setAlertColor] = useState('');
+    const [progressValue, setProgressValue] = useState(0);
+    const [successfullySubmitted, setSuccessfullySubmitted] = useState(null);
     const [options, setOptions] = useState([
         { label: "apartament", key: "apartament" },
         { label: "utilitati", key: "utilitati" },
@@ -55,6 +64,7 @@ export default function newInvoice() {
     ];
     const [inputValue, setInputValue] = useState('');
     const { register, watch, handleSubmit, setValue, formState: { errors } } = useForm();
+    const router = useRouter();
 
     const handleDrag = function (e) {
         e.preventDefault();
@@ -152,6 +162,12 @@ export default function newInvoice() {
 
         const sendFormData = async () => {
             try {
+                setSubmitted(true);
+                setSuccessfullySubmitted(null);
+                setAlertTitle('Processing');
+                setAlertDescription('Creating invoice. Please wait..');
+                setAlertColor('info');
+
                 const result = await api.post('/invoices/', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -159,19 +175,50 @@ export default function newInvoice() {
                     withCredentials: true,
                 });
 
-
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                setAlertTitle('Success');
+                setAlertDescription('Invoice created successfully');
+                setAlertColor('success');
+                setSuccessfullySubmitted(true);
 
             } catch (error) {
                 console.log(error);
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                setAlertTitle('Error');
+                setAlertDescription('An error occurred while creating the invoice');
+                setAlertColor('danger');
+                setSuccessfullySubmitted(false);
             }
-
         }
-
         sendFormData();
     }
 
     useEffect(() => {
     }, [file]);
+
+    useEffect(() => {
+        if (submitted) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }, [submitted]);
+
+
+    useEffect(() => {
+        if (submitted && successfullySubmitted) {
+            const interval = setInterval(() => {
+                setProgressValue((v) => (v + 10));
+            }, 500);
+
+            return () => clearInterval(interval);
+        }
+    }, [submitted, successfullySubmitted]);
+
+    useEffect(() => {
+        if (progressValue === 100) {
+            router.push('/homepage'); // Redirecționează către pagina principală
+        }
+    }, [progressValue]);
 
     return (
         <div className='bg-neutral-100 min-h-screen flex flex-col'>
@@ -181,12 +228,26 @@ export default function newInvoice() {
                 <div className="w-full flex items-center justify-between">
                     <h2 className='text-black text-xl font-semibold'>Create New Invoice</h2>
                 </div>
-                <Alert
-                    color="success"
-                    description={"salut"}
-                    title={"titlu"}
-                    variant="faded"
-                />
+                {
+                    submitted && <div className='w-full space-y-1'>
+                        <Alert
+                            color={alert_color}
+                            hideIcon={successfullySubmitted === null}
+                            startContent={successfullySubmitted === null && <Spinner />}
+                            description={alert_description}
+                            title={alert_title}
+                            variant="faded"
+                        />
+                        {
+                            successfullySubmitted && <Progress
+                                aria-label="Downloading..."
+                                className="w-full"
+                                color="success"
+                                size="md"
+                                value={progressValue}
+                            />}
+                    </div>
+                }
                 <div className='border-2 border-neutral-100 p-6 flex items-center rounded-2xl'>
                     <Form className="w-full" validationBehavior='native' onSubmit={handleSubmit(onSubmit)}>
                         <div className='w-full h-full flex gap-20'>
@@ -264,7 +325,7 @@ export default function newInvoice() {
                                         )
                                     }
                                 </div>
-                                <Button className='self-end' type="submit" color="primary">
+                                <Button className='self-end' type="submit" color="primary" disabled={(submitted && successfullySubmitted === null) || successfullySubmitted === true} isDisabled={(submitted && successfullySubmitted === null) || successfullySubmitted === true}>
                                     Submit
                                 </Button>
                             </div>

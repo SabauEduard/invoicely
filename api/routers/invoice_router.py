@@ -55,9 +55,9 @@ async def create_invoice(invoice_create_dto: InvoiceCreateDTO = Depends(InvoiceC
     print(invoice_create_dto)
     print(tags)
     
-    if tags:
-        tags = TagCreateDTO(tags=tags)
-        await TagService.create(tags, db, user)
+    # if tags:
+    #     tags = TagCreateDTO(tags=tags)
+    #     await TagService.create(tags, db, user)
     
     return await InvoiceService.create(invoice_create_dto, db, user)
 

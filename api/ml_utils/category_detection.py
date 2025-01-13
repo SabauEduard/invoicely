@@ -345,8 +345,8 @@ def detect_category(original_file_path: str, file_path: str, file_type: str):
     text = text.replace("ţ", "ț").replace("ş", "ș").replace("Ţ", "Ț").replace("Ş", "Ș")    
            
     # Open the file with 'utf-8' encoding
-    with open('text.txt', 'w', encoding='utf-8') as f:
-        f.write(text.replace('\n', ' '))
+    # with open('text.txt', 'w', encoding='utf-8') as f:
+    #     f.write(text.replace('\n', ' '))
     text = text.replace('\n', ' ')
 
     predict_category_value = predict_category(text)
