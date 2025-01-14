@@ -521,9 +521,7 @@ export default function TableContent(props) {
         return (
             <div className="py-2 px-2 flex justify-between items-center">
                 <span className="w-[30%] text-small text-default-400">
-                    {selectedKeys === "all"
-                        ? "All items selected"
-                        : `${selectedKeys.size} of ${filteredInvoices.length} selected`}
+                    <p className="none"> </p>
                 </span>
                 <Pagination
                     isCompact
@@ -548,13 +546,12 @@ export default function TableContent(props) {
 
     return (
         <>
-            props.invoicesList && <Table
+            {props.invoicesList && <Table
                 isHeaderSticky
                 aria-label="Example table with custom cells, pagination and sorting"
                 bottomContent={bottomContent}
                 bottomContentPlacement="outside"
                 selectedKeys={selectedKeys}
-                selectionMode="multiple"
                 sortDescriptor={sortDescriptor}
                 topContent={topContent}
                 topContentPlacement="outside"
@@ -581,6 +578,7 @@ export default function TableContent(props) {
                     )}
                 </TableBody>
             </Table>
+            }
             {notificareToSend &&
                 <DrawerComponent
                     isOpen={isOpenDrawer}
