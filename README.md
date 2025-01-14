@@ -87,7 +87,7 @@ It is used to create a session and connection for each request and to commit the
 - Set up the database, drivers, migrations and ORM (with Clem Daria)
 - Implemented User and Role models (with Clem Daria)
 - Implemented CRUD operations for User and Role models (with Clem Daria)
-- Implemented basic authentication with JWT & bcrypt (with Clem Daria)
+- Implemented basic authentication with JWT & bcrypt (with Clem Daria and Liciu Stefan)
 - Implemented 2FA authentication
 - Worked on this README file
 - Workflow, Architecture and ER diagrams
@@ -102,7 +102,15 @@ It is used to create a session and connection for each request and to commit the
 - Implemented Invoice and Tag models (with Liciu Stefan)
 - Implemented CRUD operations for Invoice and Tag models (with Liciu Stefan)
 - Implementing automatic email reminders/notifications for upcoming, due and overdue invoices (WIP)
-- Wrote User Stories and made them conform to INVEST guidelines
+- Wrote User Stories and made them conform to INVEST guidelines (with Liciu Stefan)
+- Wrote tasks for User Stories added to the backlog (with Liciu Stefan)
 - Assigned Story Points to User Stories (with Sabau Eduard)
 - Class and Object diagrams
 ### Liciu Stefan
+- Implemented Invoice and Tag models (with Nitoi Antonio)
+- Implemented CRUD operations for Invoice and Tag models (with Nitoi Antonio)
+- Wrote User Stories and made them conform to INVEST guidelines (with Nitoi Antonio)
+- Wrote tasks for User Stories added to the backlog (with Nitoi Antonio)
+- GANTT Diagram
+- Implemented basic authentication with JWT & bcrypt (with Clem Daria and Sabau Eduard)
+- Implemented Builder design pattern for Invoices
