@@ -80,7 +80,7 @@ It is used to create a session and connection for each request and to commit the
 - Implemented CRUD operations for User and Role models (with Sabau Eduard)
 - Implemented basic authentication with JWT & bcrypt (with Sabau Eduard)
 - Implemented UI elements (with Maftei Valentin)
-- Implemented ML model and ML diagram
+- Implemented ML model and ML diagram (with Maftei Valentin and Liciu Stefan)
 ### Sabau Eduard
 - Created the project structure (with Clem Daria)
 - Dependency management with Poetry (with Clem Daria)
@@ -90,7 +90,7 @@ It is used to create a session and connection for each request and to commit the
 - Implemented basic authentication with JWT & bcrypt (with Clem Daria and Liciu Stefan)
 - Implemented 2FA authentication
 - Worked on this README file
-- Workflow, Architecture and ER diagrams
+- Workflow and Architecture diagrams
 ### Maftei Valentin
 - Created invoice statistics
 - Implemented interface notifications
@@ -98,6 +98,7 @@ It is used to create a session and connection for each request and to commit the
 - Worked on environment settings for backend (versions)
 - Implemented UI elements (with Clem Daria)
 - ER Diagram
+- Implemented ML model and ML diagram (with Clem Daria and Liciu Stefan)
 ### Nitoi Antonio
 - Implemented Invoice and Tag models (with Liciu Stefan)
 - Implemented CRUD operations for Invoice and Tag models (with Liciu Stefan)
@@ -114,3 +115,4 @@ It is used to create a session and connection for each request and to commit the
 - GANTT Diagram
 - Implemented basic authentication with JWT & bcrypt (with Clem Daria and Sabau Eduard)
 - Implemented Builder design pattern for Invoices
+- Implemented ML model and ML diagram (with Maftei Valentin and Clem Daria)
