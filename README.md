@@ -73,6 +73,14 @@ It is used to create a session and connection for each request and to commit the
 
 ## Contributions to the project
 ### Clem Daria
+- Created the project structure (with Sabau Eduard)
+- Dependency management with Poetry (with Sabau Eduard)
+- Set up the database, drivers, migrations and ORM (with Sabau Eduard)
+- Implemented User and Role models (with Sabau Eduard)
+- Implemented CRUD operations for User and Role models (with Sabau Eduard)
+- Implemented basic authentication with JWT & bcrypt (with Sabau Eduard)
+- Implemented UI elements (with Maftei Valentin)
+- Implemented ML model
 ### Sabau Eduard
 - Created the project structure (with Clem Daria)
 - Dependency management with Poetry (with Clem Daria)
