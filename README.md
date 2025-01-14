@@ -72,7 +72,6 @@ It is used to create a session and connection for each request and to commit the
 ![Gantt Chart](diagrams/Gantt_Diagram.png)
 
 ## Contributions to the project
-### Nitoi Antonio
 ### Clem Daria
 ### Sabau Eduard
 - Created the project structure (with Clem Daria)
@@ -85,4 +84,11 @@ It is used to create a session and connection for each request and to commit the
 - Worked on this README file
 - Workflow, Architecture and ER diagrams
 ### Maftei Valentin
+### Nitoi Antonio
+- Implemented Invoice and Tag models (with Liciu Stefan)
+- Implemented CRUD operations for Invoice and Tag models (with Liciu Stefan)
+- Implementing automatic email reminders/notifications for upcoming, due and overdue invoices (WIP)
+- Wrote User Stories and made them conform to INVEST guidelines
+- Assigned Story Points to User Stories (with Sabau Eduard)
+- Class and Object diagrams
 ### Liciu Stefan
