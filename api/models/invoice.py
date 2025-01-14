@@ -1,8 +1,10 @@
-from sqlalchemy import Column, String, Integer, ForeignKey, Boolean, Enum, DateTime, Table
-from sqlalchemy.types import DECIMAL
+from sqlalchemy import Column, String, Text, Integer, ForeignKey, Boolean, Enum, DateTime, Table
+from sqlalchemy.types import DECIMAL, TEXT
 from sqlalchemy.orm import relationship
 from database import Base
 from enums.category import InvoiceCategory
+from enums.importance import Importance
+from enums.status import InvoiceStatus
 
 invoice_tags = Table(
     'invoice_tags',
@@ -16,9 +18,11 @@ class Invoice(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
+    name = Column(String(128), nullable=False)
+
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
 
-    category = Column(Enum(InvoiceCategory))
+    category = Column(Enum(InvoiceCategory), nullable=False)
 
     path = Column(String(256), nullable=False)
 
@@ -26,9 +30,11 @@ class Invoice(Base):
 
     amount = Column(DECIMAL(10, 2), nullable=False)
 
-    status = Column(String(32), nullable=False)
+    status = Column(Enum(InvoiceStatus), nullable=False)
+    
+    content = Column(Text, nullable=True)
 
-    importance = Column(Integer, nullable=False)
+    importance = Column(Enum(Importance), nullable=False)
 
     notes = Column(String(256), nullable=True)
 
@@ -36,10 +42,74 @@ class Invoice(Base):
 
     incomplete = Column(Boolean)
 
-    emitted_date = Column(DateTime)
+    emission_date = Column(DateTime)
 
-    expiry_date = Column(DateTime)
+    due_date = Column(DateTime)
 
     user = relationship("User", back_populates="invoices")
 
     tags = relationship("Tag", secondary=invoice_tags)
+
+
+class InvoiceBuilder:
+    def __init__(self):
+        self.invoice = Invoice()
+
+    def with_name(self, name):
+        self.invoice.name = name
+        return self
+
+    def with_user_id(self, user_id):
+        self.invoice.user_id = user_id
+        return self
+
+    def with_category(self, category):
+        self.invoice.category = category
+        return self
+
+    def with_path(self, path):
+        self.invoice.path = path
+        return self
+
+    def with_vendor(self, vendor):
+        self.invoice.vendor = vendor
+        return self
+
+    def with_amount(self, amount):
+        self.invoice.amount = amount
+        return self
+
+    def with_status(self, status):
+        self.invoice.status = status
+        return self
+
+    def with_importance(self, importance):
+        self.invoice.importance = importance
+        return self
+
+    def with_notes(self, notes):
+        self.invoice.notes = notes
+        return self
+
+    def with_duplicate(self, duplicate):
+        self.invoice.duplicate = duplicate
+        return self
+
+    def with_incomplete(self, incomplete):
+        self.invoice.incomplete = incomplete
+        return self
+
+    def with_emission_date(self, emission_date):
+        self.invoice.emission_date = emission_date
+        return self
+
+    def with_due_date(self, due_date):
+        self.invoice.due_date = due_date
+        return self
+
+    def with_content(self, content):
+        self.invoice.content = content
+        return self
+
+    def build(self):
+        return self.invoice

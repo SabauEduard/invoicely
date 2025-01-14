@@ -58,8 +58,8 @@ class InvoiceRepository:
         invoice.notes = invoice_create_dto.notes
         invoice.duplicate = invoice_create_dto.duplicate
         invoice.incomplete = invoice_create_dto.incomplete
-        invoice.emitted_date = invoice_create_dto.emitted_date
-        invoice.expiry_date = invoice_create_dto.expiry_date
+        invoice.emission_date = invoice_create_dto.emission_date
+        invoice.due_date = invoice_create_dto.due_date
 
         await db.commit()
         await db.refresh(invoice)

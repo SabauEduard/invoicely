@@ -2,17 +2,22 @@ from typing import List
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from dtos.tag_dtos import TagCreateDTO, TagDTO
+from dtos.tag_dtos import TagCreateDTO, TagDTO, TagsCreateDTO
 from repositories.tag_repository import TagRepository
 
 class TagService:
 
     @staticmethod
-    async def create(tag_create_dto: TagCreateDTO, db: AsyncSession) -> TagDTO:
+    async def create(tags_create_dto: TagsCreateDTO, db: AsyncSession) -> TagDTO:
         '''
         Create a tag
         '''
-        return await TagRepository.create(tag_create_dto, db)
+        
+        user_tags = await TagRepository.get_all(db)
+        
+        for tag in tags_create_dto.tags:
+            if tag not in [user_tag.name for user_tag in user_tags]:
+                await TagRepository.create(TagCreateDTO(tag), db)
     
     @staticmethod
     async def get_all(db: AsyncSession) -> List[TagDTO]:

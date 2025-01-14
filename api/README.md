@@ -5,6 +5,19 @@ pip install poetry
 poetry install
 ```
 
+# Python version required: 3.10.4
+
+# Manual install needed libraries
+tesseract-ocr: (https://github.com/UB-Mannheim/tesseract/wiki)
+
+tesseract-oc: romanian language (https://tesseract-ocr.github.io/tessdoc/Data-Files.html) - to be included in tessdata folder
+
+poppler: (https://github.com/oschwartz10612/poppler-windows/releases)
+
+Don't forget to update poppler_path and pytesseract.pytesseract.tesseract_cmd in category_detection.py .
+
+
+
 # To install new dependencies
 
 ```
