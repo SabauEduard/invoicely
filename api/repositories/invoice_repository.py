@@ -5,6 +5,7 @@ from enums.category import InvoiceCategory
 from enums.status import InvoiceStatus
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy import func
 from models.invoice import Invoice
 from dtos.invoice_dtos import InvoiceCreateDTO, InvoiceDTO
 
@@ -103,3 +104,15 @@ class InvoiceRepository:
         invoice = result.scalars().first()
         await db.delete(invoice)
         await db.commit()
+
+    
+    @staticmethod
+    async def get_total_by_vendor_in_date_range(start_date: date, end_date: date, user_id: int, db: AsyncSession):
+        query = (
+            select (Invoice.vendor, func.sum(Invoice.amount))
+            .where((Invoice.emission_date >= start_date) & (Invoice.emission_date <= end_date) & (Invoice.user_id == user_id))
+            .group_by(Invoice.vendor)
+        )
+
+        result = await db.execute(query)
+        return result.fetchall()

@@ -1,3 +1,4 @@
+import calendar
 import os
 import smtplib
 from datetime import date, timedelta
@@ -27,11 +28,18 @@ class MailerService:
     smtp_due_this_week_template_uuid='41e0e5ce-8538-495e-ae9a-97fff7acc611'
     smtp_due_today_template_uuid='41e0e5ce-8538-495e-ae9a-97fff7acc611'
     smtp_overdue_template_uuid='41e0e5ce-8538-495e-ae9a-97fff7acc611'
-    smtp_monthly_report_template_uuid='41e0e5ce-8538-495e-ae9a-97fff7acc611'
+    smtp_monthly_report_template_uuid='df8c162f-85f8-4534-893e-01c899a3ed0b'
 
     @staticmethod
-    def create_email_from_template(type, user):
+    def create_email_from_template(type, user, report=None):
         smtp_template_uuid = None
+        smtp_template_variables = {
+                "company_info_name": MailerService.smtp_company_info_name,
+                "company_info_address": MailerService.smtp_company_info_address,
+                "company_info_city": MailerService.smtp_company_info_city,
+                "company_info_zip_code": MailerService.smtp_company_info_zip_code,
+                "company_info_country": MailerService.smtp_company_info_country,
+            }
 
         if type == 1:
             smtp_template_uuid = MailerService.smtp_due_this_week_template_uuid
@@ -39,18 +47,16 @@ class MailerService:
             smtp_template_uuid = MailerService.smtp_due_today_template_uuid
         elif type == 3:
             smtp_template_uuid = MailerService.smtp_overdue_template_uuid
+        elif type == 4:
+            smtp_template_uuid = MailerService.smtp_monthly_report_template_uuid
+            smtp_template_variables["vendors"] = report
+
 
         mail = mt.MailFromTemplate(
             sender=mt.Address(email=MailerService.smtp_sender_email, name=MailerService.smtp_sender_name),
             to=[mt.Address(email=user.email)],
             template_uuid=smtp_template_uuid,
-            template_variables={
-                "company_info_name": MailerService.smtp_company_info_name,
-                "company_info_address": MailerService.smtp_company_info_address,
-                "company_info_city": MailerService.smtp_company_info_city,
-                "company_info_zip_code": MailerService.smtp_company_info_zip_code,
-                "company_info_country": MailerService.smtp_company_info_country,
-            }
+            template_variables= smtp_template_variables
         )
 
         return mail
@@ -89,6 +95,24 @@ class MailerService:
 
                 if (user.email == MailerService.smtp_demo_recipient_email): # this should be removed once email sending domain is acquired
                     mail = MailerService.create_email_from_template(3, user)
+                    client = mt.MailtrapClient(token=MailerService.smtp_token)
+                    client.send(mail)
+                
+            
+            today = date.today()
+            first_day = today.replace(day=1)
+            last_day = today.replace(day=calendar.monthrange(today.year, today.month)[1])
+            first_day_str = first_day.strftime('%Y-%m-%d')
+            last_day_str = last_day.strftime('%Y-%m-%d')
+            users = await UserService.get_all(db)
+
+            for user in users:
+                report_data = await InvoiceService.get_total_by_vendor_in_date_range(first_day_str, last_day_str, db, user)
+                print(report_data)
+                report = [{"vendor_name": name, "amount": float(amount)} for name, amount in report_data]
+                print(report)
+                if(user.email == MailerService.smtp_demo_recipient_email):
+                    mail = MailerService.create_email_from_template(4, user, report)
                     client = mt.MailtrapClient(token=MailerService.smtp_token)
                     client.send(mail)
 

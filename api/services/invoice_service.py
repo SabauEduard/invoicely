@@ -1,3 +1,4 @@
+from datetime import date
 import os
 from typing import List, Optional
 
@@ -125,3 +126,11 @@ class InvoiceService:
             raise HTTPException(status_code=403, detail="You are not authorized to delete this invoice")
         
         return await InvoiceRepository.delete_by_id(invoice_id, db)
+
+
+    @staticmethod
+    async def get_total_by_vendor_in_date_range(start_date: date, end_date: date, db: AsyncSession, user: UserDTO):
+        '''
+        Get total amount by vendor in a date range
+        '''
+        return await InvoiceRepository.get_total_by_vendor_in_date_range(start_date, end_date, user.id, db)
