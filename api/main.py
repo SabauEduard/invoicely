@@ -25,22 +25,21 @@ def run_mailer():
     asyncio.run(MailerService.send_reminders())
 
 
-# @asynccontextmanager
-# async def lifespan(app: FastAPI):
-#     scheduler = BackgroundScheduler()
-#     scheduler.add_job(run_mailer, 'cron', second='*/2')
-#     scheduler.start()
-#     try:
-#         yield
-#     finally:
-#         scheduler.shutdown()
-
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(run_mailer, 'cron', hour=9, minute=0)
+    scheduler.start()
+    try:
+        yield
+    finally:
+        scheduler.shutdown()
 
 
 app = FastAPI(
     title="Invoicely API",
     summary="An API to manage invoices",
-    # lifespan=lifespan
+    lifespan=lifespan
 )
 
 # app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
@@ -67,13 +66,6 @@ app.include_router(auth_router, prefix="/auth")
 app.include_router(role_router, prefix="/roles", dependencies=[Depends(get_current_user)])
 app.include_router(tag_router, prefix="/tags", dependencies=[Depends(get_current_user)])
 app.include_router(invoice_router, prefix="/invoices", dependencies=[Depends(get_current_user)])
-
-
-# @app.on_event("startup")
-# def startup_event():
-#     scheduler = BackgroundScheduler()
-#     scheduler.add_job(lambda: fastapi.concurrency.run_in_threadpool(MailerService.send_reminders), 'cron', second='*/5')
-#     scheduler.start()
 
 
 @app.get("/")

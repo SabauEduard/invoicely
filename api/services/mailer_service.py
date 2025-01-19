@@ -104,16 +104,18 @@ class MailerService:
             last_day = today.replace(day=calendar.monthrange(today.year, today.month)[1])
             first_day_str = first_day.strftime('%Y-%m-%d')
             last_day_str = last_day.strftime('%Y-%m-%d')
-            users = await UserService.get_all(db)
 
-            for user in users:
-                report_data = await InvoiceService.get_total_by_vendor_in_date_range(first_day_str, last_day_str, db, user)
-                print(report_data)
-                report = [{"vendor_name": name, "amount": float(amount)} for name, amount in report_data]
-                print(report)
-                if(user.email == MailerService.smtp_demo_recipient_email):
-                    mail = MailerService.create_email_from_template(4, user, report)
-                    client = mt.MailtrapClient(token=MailerService.smtp_token)
-                    client.send(mail)
+            if today == last_day:
+                users = await UserService.get_all(db)
+
+                for user in users:
+                    report_data = await InvoiceService.get_total_by_vendor_in_date_range(first_day_str, last_day_str, db, user)
+                    print(report_data)
+                    report = [{"vendor_name": name, "amount": float(amount)} for name, amount in report_data]
+                    print(report)
+                    if(user.email == MailerService.smtp_demo_recipient_email):
+                        mail = MailerService.create_email_from_template(4, user, report)
+                        client = mt.MailtrapClient(token=MailerService.smtp_token)
+                        client.send(mail)
 
             break
