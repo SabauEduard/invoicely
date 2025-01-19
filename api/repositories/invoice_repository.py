@@ -1,6 +1,8 @@
 from typing import List, Optional
+from datetime import date
 
 from enums.category import InvoiceCategory
+from enums.status import InvoiceStatus
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from models.invoice import Invoice
@@ -40,6 +42,33 @@ class InvoiceRepository:
         if not invoice:
             return None
         return InvoiceDTO.from_invoice(invoice)
+    
+    @staticmethod
+    async def get_unpaid_by_due_date(date, db: AsyncSession) -> List[InvoiceDTO]:
+        '''
+        Get invoices by date
+        '''
+        result = await db.execute(select(Invoice).filter((Invoice.due_date == date) & (Invoice.status != InvoiceStatus.PAID)))
+        invoices = result.scalars().all()
+        return [InvoiceDTO.from_invoice(invoice) for invoice in invoices]
+    
+    @staticmethod
+    async def get_unpaid_by_due_date_range(start_date, end_date, db: AsyncSession) -> List[InvoiceDTO]:
+        '''
+        Get invoices by date
+        '''
+        result = await db.execute(select(Invoice).filter((Invoice.due_date >= start_date) & (Invoice.due_date <= end_date)  & (Invoice.status != InvoiceStatus.PAID)))
+        invoices = result.scalars().all()
+        return [InvoiceDTO.from_invoice(invoice) for invoice in invoices]
+    
+    @staticmethod
+    async def get_all_unpaid_overdue(db: AsyncSession) -> List[InvoiceDTO]:
+        '''
+        Get all overdue invoices
+        '''
+        result = await db.execute(select(Invoice).filter((Invoice.due_date < date.today()) & (Invoice.status != InvoiceStatus.PAID)))
+        invoices = result.scalars().all()
+        return [InvoiceDTO.from_invoice(invoice) for invoice in invoices]
     
     @staticmethod
     async def update(invoice_id: int, invoice_create_dto: InvoiceCreateDTO, db: AsyncSession) -> Optional[InvoiceDTO]:

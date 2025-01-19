@@ -76,6 +76,27 @@ class InvoiceService:
         return invoice
     
     @staticmethod
+    async def get_unpaid_by_due_date(date, db: AsyncSession) -> List[InvoiceDTO]:
+        '''
+        Get invoices by date
+        '''
+        return await InvoiceRepository.get_unpaid_by_due_date(date, db)
+    
+    @staticmethod
+    async def get_unpaid_by_due_date_range(start_date, end_date, db: AsyncSession) -> List[InvoiceDTO]:
+        '''
+        Get invoices by date
+        '''
+        return await InvoiceRepository.get_unpaid_by_due_date_range(start_date, end_date, db)
+    
+    @staticmethod
+    async def get_all_unpaid_overdue(db: AsyncSession) -> List[InvoiceDTO]:
+        '''
+        Get all overdue invoices
+        '''
+        return await InvoiceRepository.get_all_unpaid_overdue(db)
+    
+    @staticmethod
     async def update_invoice(invoice_id: int, invoice_create_dto: InvoiceCreateDTO, db: AsyncSession, user: UserDTO) -> InvoiceDTO:
         '''
         Update an invoice
