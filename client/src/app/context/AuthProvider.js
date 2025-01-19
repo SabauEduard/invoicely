@@ -37,6 +37,9 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem('user', JSON.stringify(user_response.data));
             return response.status;
         } catch (error) {
+            if (error.response.detail === 'OTP is required') {
+                return "OTP";
+            }
             throw error;
         }
     }

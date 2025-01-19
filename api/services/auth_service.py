@@ -143,7 +143,8 @@ class AuthService:
         await UserRepository.enable_2fa(user_id, otp_secret, db)
         uri = get_totp_uri(user.email, otp_secret)
         qr_code = generate_qr_code(uri)
-        return {"otp_secret": otp_secret, "qr_code": qr_code}
+        qr_code_url = f"data:image/png;base64,{qr_code}"
+        return {"otp_secret": otp_secret, "qr_code_url": qr_code_url}
 
     @staticmethod
     async def disable_2fa(db: AsyncSession, user_id: int):

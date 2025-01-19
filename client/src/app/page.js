@@ -5,15 +5,18 @@ import React, { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import AuthContext from "./context/AuthProvider";
-import { Tabs, Tab, Input, Link, Button, Card, CardBody } from "@nextui-org/react";
+import { Tabs, Tab, Input, Link, Button, Card, CardBody, InputOtp } from "@nextui-org/react";
 import api from "./api/api"; // Ensure this import is correct
 
 export default function Authentication() {
     const REGISTER_URL = '/users/';
 
     const [error, setError] = useState(null);
+    const [otp, setOtp] = useState(null);
 
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+
+    const otpValue = watch('otp', '');
 
     const router = useRouter();
 
@@ -23,6 +26,7 @@ export default function Authentication() {
         const body = {
             username: data['email-login'],
             password: data['parola-login'],
+            otp: data['otp'],
         };
 
         try {
@@ -32,10 +36,13 @@ export default function Authentication() {
                 router.push('/homepage');
             }
         } catch (error) {
+            console.log(error);
             if (!error.response) {
                 setError('Server could not be contacted.');
             } else if (error.response.status === 401) {
                 setError('Incorrect email or password.');
+            } else if (error.response.data.detail === 'OTP is required') {
+                setOtp(true);
             } else {
                 setError('Data could not be processed.');
             }
@@ -97,22 +104,34 @@ export default function Authentication() {
                             >
                                 <Tab key="login" title="Login">
                                     <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-                                        <Input
-                                            isRequired
-                                            label="Email"
-                                            placeholder="Enter your email"
-                                            type="email"
-                                            id="email-login"
-                                            {...register("email-login")}
-                                        />
-                                        <Input
-                                            isRequired
-                                            label="Password"
-                                            placeholder="Enter your password"
-                                            type="password"
-                                            id="parola-login"
-                                            {...register("parola-login")}
-                                        />
+                                        {!otp ?
+                                            <><Input
+                                                isRequired
+                                                label="Email"
+                                                placeholder="Enter your email"
+                                                type="email"
+                                                id="email-login"
+                                                {...register("email-login")}
+                                            />
+                                                <Input
+                                                    isRequired
+                                                    label="Password"
+                                                    placeholder="Enter your password"
+                                                    type="password"
+                                                    id="parola-login"
+                                                    {...register("parola-login")}
+                                                />
+                                            </>
+                                            :
+                                            <>
+                                                <div className="flex flex-col items-start gap-2">
+                                                    <InputOtp isRequired size="lg" length={6} {...register('otp')} id="otp" label="Otp" />
+                                                    <div className="text-small text-default-500">
+                                                        OTP value: <span className="text-md font-medium">{otpValue}</span>
+                                                    </div>
+                                                </div>
+                                            </>
+                                        }
                                         <p className="text-center text-small">
                                             Need to create an account?{" "}
                                             <Link size="sm" onPress={() => setSelected("sign-up")}>
