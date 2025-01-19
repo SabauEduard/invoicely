@@ -17,7 +17,7 @@ class TagService:
         
         for tag in tags_create_dto.tags:
             if tag not in [user_tag.name for user_tag in user_tags]:
-                await TagRepository.create(TagCreateDTO(tag), db)
+                await TagRepository.create(TagCreateDTO(tag=tag), db)
     
     @staticmethod
     async def get_all(db: AsyncSession) -> List[TagDTO]:
