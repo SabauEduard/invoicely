@@ -81,6 +81,43 @@ It is used to create a session and connection for each request and to commit the
 
 ![Gantt Chart](diagrams/Gantt_Diagram.png)
 
+
+## Tests
+
+Unit tests for the routers and services were written using the [pytest](https://docs.pytest.org/en/6.2.x/) framework. The tests can be found in the [tests](https://github.com/SabauEduard/invoicely/tree/main/api/tests) directory.
+
+![Coverage](docs/coverage.png)
+
+## Advantages and disadvantages of programming methods
+
+### Test-Driven Development (TDD)
+Advantages:
+- Improves code quality
+- Better understanding of the requirements
+- Easier to refactor code
+- Simplicity in coding
+- Documentation in tests
+
+Disadvantages:
+- Time-consuming
+- Requires a lot of effort
+- False sense of security
+- Maintenance overhead
+
+### Pair Programming
+Advantages:
+- Better code quality
+- Knowledge sharing
+- Faster problem-solving
+- Increased teamwork
+- Better communication
+
+Disadvantages:
+- Can slow down simple tasks
+- Doubles time spent on a task
+- Requires good communication
+- Interruptions can be disruptive
+
 ## Contributions to the project
 
 ### Clem Daria - 20%
