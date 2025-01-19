@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, use, useState, useContext, useEffect } from "react";
-import api from "../api/api";
+import authApi from "../api/authApi";
 
 const AuthContext = createContext({});
 const LOGIN_URL = '/auth/login';
@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
 
     const loginApiCall = async (payload) => {
         try {
-            const response = await api.post(LOGIN_URL, payload,
+            const response = await authApi.post(LOGIN_URL, payload,
                 {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
                 });
             const token = response.data.access_token;
 
-            const user_response = await api.get(ME_URL,
+            const user_response = await authApi.get(ME_URL,
                 {
                     withCredentials: true,
                 });

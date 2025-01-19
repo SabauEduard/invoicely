@@ -6,10 +6,11 @@ from models.tag import Tag
 class TagDTO(BaseModel):
     id: int
     name: str
+    user_id: int
 
     @staticmethod
     def from_tag(tag: Tag):
-        return TagDTO(id=tag.id, name=tag.name)
+        return TagDTO(id=tag.id, name=tag.name, user_id=tag.user_id)
 
 
 class TagsCreateDTO(BaseModel):
@@ -21,7 +22,8 @@ class TagsCreateDTO(BaseModel):
     
 class TagCreateDTO(BaseModel):
     name: str
+    user_id: int
 
     def to_tag(self) -> Tag:
-        return Tag(name=self.name)
+        return Tag(name=self.name, user_id=self.user_id)
     

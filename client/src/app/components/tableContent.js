@@ -34,7 +34,7 @@ export const columns = [
     { name: "AMOUNT", "uid": "amount", sortable: true },
     { name: "IMPORTANCE", "uid": "importance", sortable: true },
     { name: "NOTE", "uid": "note" },
-    // { name: "TAGS", "uid": "tags" },
+    { name: "TAGS", "uid": "tags" },
     { name: "EMISSION DATE", "uid": "emission_date", sortable: true },
     { name: "DUE DATE", "uid": "due_date", sortable: true },
     { name: "ACTIONS", "uid": "actions" },
@@ -176,7 +176,6 @@ const INITIAL_VISIBLE_COLUMNS = ["name", "category", "vendor", "amount", "status
 
 export default function TableContent(props) {
     const handleOpenDrawer = (notificare) => {
-        console.log("DESCHIDEEEEE", notificare);
         setPopoverOpen(false);
         setSelectedNotificare(notificare);
         setIsOpenDrawer(true);
@@ -326,13 +325,13 @@ export default function TableContent(props) {
                 )
             case "amount":
                 return cellValue + " RON";
-            case "tags":
+            case "tags":  
                 return (
                     <div className="space-x-1">
                         {
                             (cellValue || []).map((tag) => (
-                                <Chip key={tag} size="sm" variant="flat">
-                                    {tag}
+                                <Chip key={tag.name} size="sm" variant="flat">
+                                    {tag.name}
                                 </Chip>
                             ))
                         }

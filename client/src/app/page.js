@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import AuthContext from "./context/AuthProvider";
 import { Tabs, Tab, Input, Link, Button, Card, CardBody, InputOtp } from "@nextui-org/react";
-import api from "./api/api"; // Ensure this import is correct
+import authApi from "./api/authApi";
 
 export default function Authentication() {
     const REGISTER_URL = '/users/';
@@ -60,7 +60,7 @@ export default function Authentication() {
                 role_id: 1,
             };
 
-            await api.post(REGISTER_URL, body,
+            await authApi.post(REGISTER_URL, body,
                 {
                     headers: {
                         'Content-Type': 'application/json',

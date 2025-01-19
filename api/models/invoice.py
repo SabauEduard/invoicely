@@ -48,7 +48,7 @@ class Invoice(Base):
 
     user = relationship("User", back_populates="invoices")
 
-    tags = relationship("Tag", secondary=invoice_tags)
+    tags = relationship("Tag", secondary=invoice_tags, back_populates="invoices")
 
 
 class InvoiceBuilder:
@@ -109,6 +109,10 @@ class InvoiceBuilder:
 
     def with_content(self, content):
         self.invoice.content = content
+        return self
+    
+    def with_tags(self, tags):
+        self.invoice.tags = tags
         return self
 
     def build(self):

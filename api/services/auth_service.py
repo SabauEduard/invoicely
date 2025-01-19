@@ -56,6 +56,8 @@ class AuthService:
             "sub": email,
             "exp": datetime.now(timezone.utc) + expires_delta,
         }
+        expires = datetime.now(timezone.utc) + expires_delta
+        encode.update({"exp": expires})
         return jwt.encode(encode, AuthService.secret_key, algorithm="HS256")
 
     @staticmethod

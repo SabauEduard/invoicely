@@ -52,7 +52,7 @@ async def get_invoice(invoice_id: int, db: AsyncSession = Depends(get_db), user:
 )
 async def create_invoice(invoice_create_dto: InvoiceCreateDTO = Depends(InvoiceCreateDTO.as_form), tags: Optional[List[str]] = Form(None), db: AsyncSession = Depends(get_db), user: UserDTO = Depends(get_current_user)):
     if tags:
-        tag_dtos = [TagCreateDTO(name=tag) for tag in tags]
+        tag_dtos = [TagCreateDTO(name=tag, user_id=user.id) for tag in tags]
         created_tags = await TagService.create(tag_dtos, db)
     
     invoice = await InvoiceService.create(invoice_create_dto, db, user)

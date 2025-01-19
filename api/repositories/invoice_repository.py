@@ -7,7 +7,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import func
 from models.invoice import Invoice
+from models.tag import Tag
 from dtos.invoice_dtos import InvoiceCreateDTO, InvoiceDTO
+from sqlalchemy.orm import joinedload
 
 class InvoiceRepository:
 
@@ -29,8 +31,8 @@ class InvoiceRepository:
         '''
         Get all invoices
         '''
-        result = await db.execute(select(Invoice))
-        invoices = result.scalars().all()
+        result = await db.execute(select(Invoice).options(joinedload(Invoice.tags)))
+        invoices = result.unique().scalars().all()
         return [InvoiceDTO.from_invoice(invoice) for invoice in invoices]
     
     @staticmethod

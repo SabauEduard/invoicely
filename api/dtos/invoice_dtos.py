@@ -1,10 +1,11 @@
+from dtos.tag_dtos import TagDTO
 from fastapi import UploadFile, Form, File
 
 from enums.category import InvoiceCategory
 from enums.importance import Importance
 from enums.status import InvoiceStatus
 from pydantic import Field, BaseModel, model_validator, json
-from typing import Optional
+from typing import List, Optional
 
 from models.invoice import Invoice, InvoiceBuilder
 from datetime import datetime
@@ -25,6 +26,9 @@ class InvoiceDTO(BaseModel):
     incomplete: bool = Field(None, alias="incomplete")
     emission_date: Optional[datetime] = Field(None, alias="emission_date")
     due_date: Optional[datetime] = Field(None, alias="due_date")
+    content: str = Field(None, alias="content")
+    tags: List[TagDTO]
+
 
     @staticmethod
     def from_invoice(invoice: Invoice):
@@ -42,7 +46,9 @@ class InvoiceDTO(BaseModel):
             duplicate=invoice.duplicate,
             incomplete=invoice.incomplete,
             emission_date=invoice.emission_date,
-            due_date=invoice.due_date
+            due_date=invoice.due_date,
+            content=invoice.content,
+            tags=[TagDTO.from_tag(tag) for tag in invoice.tags]
         )
 
 

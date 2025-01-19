@@ -24,3 +24,5 @@ class User(Base):
     role = relationship("Role", back_populates="users")
 
     invoices = relationship("Invoice", back_populates="user")
+    
+    tags = relationship("Tag", back_populates="user")
