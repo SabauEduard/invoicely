@@ -92,7 +92,7 @@ It is used to create a session and connection for each request and to commit the
 -   Implemented CRUD operations for User and Role models (with Sabau Eduard)
 -   Implemented basic authentication with JWT & bcrypt (with Sabau Eduard)
 -   Implemented UI elements (with Maftei Valentin)
--   Implemented ML model and ML diagram (with Maftei Valentin and Liciu Stefan)
+-   Implemented ML model and ML diagram (with Maftei Valentin, Liciu Stefan and Nitoi Antonio)
 
 ### Sabau Eduard - 20%
 
@@ -115,13 +115,15 @@ It is used to create a session and connection for each request and to commit the
 -   Worked on environment settings for backend (versions)
 -   Implemented UI elements (with Clem Daria)
 -   ER Diagram
--   Implemented ML model and ML diagram (with Clem Daria and Liciu Stefan)
+-   Implemented ML model and ML diagram (with Clem Daria, Liciu Stefan and Nitoi Antonio)
 
 ### Nitoi Antonio - 20%
 
 -   Implemented Invoice and Tag models (with Liciu Stefan)
 -   Implemented CRUD operations for Invoice and Tag models (with Liciu Stefan)
--   Implementing automatic email reminders/notifications for upcoming, due and overdue invoices (WIP)
+-   Implemented automatic email reminders/notifications for upcoming, due and overdue invoices
+-   Implemented automatic email monthly spending report by vendor (with Liciu Stefan)
+-   Implemented ML model and ML diagram (with Maftei Valentin, Clem Daria and Liciu Stefan)
 -   Wrote unit tests for routers and services (with Liciu Stefan and Sabau Eduard)
 -   Wrote User Stories and made them conform to INVEST guidelines (with Liciu Stefan)
 -   Wrote tasks for User Stories added to the backlog (with Liciu Stefan)
@@ -132,10 +134,11 @@ It is used to create a session and connection for each request and to commit the
 
 -   Implemented Invoice and Tag models (with Nitoi Antonio)
 -   Implemented CRUD operations for Invoice and Tag models (with Nitoi Antonio)
+-   Implementing automatic email monthly spending report by vendor (with Nitoi Antonio)
 -   Wrote User Stories and made them conform to INVEST guidelines (with Nitoi Antonio)
 -   Wrote unit tests for routers and services (with Nitoi Antonio and Sabau Eduard)
--   Wrote tasks for User Stories added to the backlog (with Nitoi Antonio)
--   GANTT Diagram
 -   Implemented basic authentication with JWT & bcrypt (with Clem Daria and Sabau Eduard)
 -   Implemented Builder design pattern for Invoices
--   Implemented ML model and ML diagram (with Maftei Valentin and Clem Daria)
+-   Implemented ML model and ML diagram (with Maftei Valentin, Clem Daria and Nitoi Antonio)
+-   Wrote tasks for User Stories added to the backlog (with Nitoi Antonio)
+-   GANTT Diagram
