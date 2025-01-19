@@ -24,7 +24,7 @@ Don't forget to update poppler_path and pytesseract.pytesseract.tesseract_cmd in
 poetry add <package-name>
 ```
 
-# To Run the Application
+# To run the application
 
 ```
 docker compose up -d
@@ -66,3 +66,19 @@ poetry shell
 alembic upgrade <version>
 ```
 
+# To run unit tests
+
+```
+poetry shell
+pytest --disable-pytest-warnings
+```
+
+## To get coverage report
+
+```
+poetry shell
+coverage run -m pytest --disable-pytest-warnings
+coverage html
+```
+
+Then open ```index.html``` from the ```htmlcov``` folder created to see the coverage.
