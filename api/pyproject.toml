@@ -38,6 +38,9 @@ evaluate = "^0.4.3"
 scikit-learn = "^1.6.1"
 numpy = "^1.21.4"
 seaborn = "^0.13.2"
+fastapi-utilities = "^0.3.0"
+apscheduler = "^3.11.0"
+mailtrap = "^2.0.1"
 
 [build-system]
 requires = ["poetry-core"]

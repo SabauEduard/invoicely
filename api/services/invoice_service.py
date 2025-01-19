@@ -1,3 +1,4 @@
+from datetime import date
 import os
 from typing import List, Optional
 
@@ -76,6 +77,27 @@ class InvoiceService:
         return invoice
     
     @staticmethod
+    async def get_unpaid_by_due_date(date, db: AsyncSession) -> List[InvoiceDTO]:
+        '''
+        Get invoices by date
+        '''
+        return await InvoiceRepository.get_unpaid_by_due_date(date, db)
+    
+    @staticmethod
+    async def get_unpaid_by_due_date_range(start_date, end_date, db: AsyncSession) -> List[InvoiceDTO]:
+        '''
+        Get invoices by date
+        '''
+        return await InvoiceRepository.get_unpaid_by_due_date_range(start_date, end_date, db)
+    
+    @staticmethod
+    async def get_all_unpaid_overdue(db: AsyncSession) -> List[InvoiceDTO]:
+        '''
+        Get all overdue invoices
+        '''
+        return await InvoiceRepository.get_all_unpaid_overdue(db)
+    
+    @staticmethod
     async def update_invoice(invoice_id: int, invoice_create_dto: InvoiceCreateDTO, db: AsyncSession, user: UserDTO) -> InvoiceDTO:
         '''
         Update an invoice
@@ -104,3 +126,11 @@ class InvoiceService:
             raise HTTPException(status_code=403, detail="You are not authorized to delete this invoice")
         
         return await InvoiceRepository.delete_by_id(invoice_id, db)
+
+
+    @staticmethod
+    async def get_total_by_vendor_in_date_range(start_date: date, end_date: date, db: AsyncSession, user: UserDTO):
+        '''
+        Get total amount by vendor in a date range
+        '''
+        return await InvoiceRepository.get_total_by_vendor_in_date_range(start_date, end_date, user.id, db)

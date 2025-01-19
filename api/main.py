@@ -2,11 +2,15 @@ import signal
 
 import os
 
+import asyncio
+
 import fastapi
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.staticfiles import StaticFiles
+from contextlib import asynccontextmanager
+from apscheduler.schedulers.background import BackgroundScheduler
 
 from routers.auth_router import auth_router, get_current_user
 from routers.role_router import role_router
@@ -14,9 +18,28 @@ from routers.user_router import user_router
 from routers.tag_router import tag_router
 from routers.invoice_router import invoice_router
 
+from services.mailer_service import MailerService
+
+
+def run_mailer():
+    asyncio.run(MailerService.send_reminders())
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(run_mailer, 'cron', hour=9, minute=0)
+    scheduler.start()
+    try:
+        yield
+    finally:
+        scheduler.shutdown()
+
+
 app = FastAPI(
     title="Invoicely API",
     summary="An API to manage invoices",
+    lifespan=lifespan
 )
 
 # app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
@@ -48,6 +71,12 @@ app.include_router(invoice_router, prefix="/invoices", dependencies=[Depends(get
 @app.get("/")
 async def read_root():
     return {"Hello": "World"}
+
+
+@app.get("/email")
+async def send_email_reminders():
+    await MailerService.send_reminders()
+    return fastapi.Response(status_code=200, content='Email reminders sent')
 
 
 @app.get("/shutdown")

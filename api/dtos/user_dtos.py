@@ -33,7 +33,7 @@ class UserDTO(BaseModel):
     deletion_date: Optional[datetime]
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
     @staticmethod
     def from_user(user: User):
