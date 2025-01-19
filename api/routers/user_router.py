@@ -73,4 +73,4 @@ async def delete_user(user_id: int, db: AsyncSession = Depends(get_db)):
     },
 )
 async def update_user(user_id: int, user_update_dto: UserCreateDTO, db: AsyncSession = Depends(get_db)):
-    await UserService.update_user(user_id, user_update_dto, db)
+    return await UserService.update_user(user_id, user_update_dto, db)
