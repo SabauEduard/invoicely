@@ -20,7 +20,6 @@ import seaborn as sns
 
 load_dotenv(join(dirname(__file__), '.env'))
 
-print(os.getenv('TESSERACT_CMD'))
 pytesseract.pytesseract.tesseract_cmd = os.getenv('TESSERACT_CMD')
 poppler_path = os.getenv('POPPLER_PATH')
 
@@ -36,7 +35,6 @@ def change_dpi(image_path: str, dpi: int = 300) -> None:
     # image_path = "./factura_test.jpeg"
     image = Image.open(image_path)
     image.save(image_path, dpi=(dpi,dpi))
-    print("DPI-ul imaginii a fost modificat cu succes")
     
     
 def normalize_image(image_path: str) -> None:
@@ -312,7 +310,6 @@ def predict_category(text: str):
 
     category_names = ["altele", "consumabile", "curent", "it", "reparații", "telefonie"]
     predicted_category_name = category_names[predicted_category]
-    print(predicted_category_name)
     
     return predicted_category_name
     

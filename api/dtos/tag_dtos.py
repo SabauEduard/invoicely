@@ -20,9 +20,8 @@ class TagsCreateDTO(BaseModel):
         return [Tag(name=tag) for tag in self.tags]
     
 class TagCreateDTO(BaseModel):
-    tag: str = Field(None, alias="tag")
-    
-    @staticmethod
-    def to_tag(self):
-        return Tag(name=self.tag)
+    name: str
+
+    def to_tag(self) -> Tag:
+        return Tag(name=self.name)
     

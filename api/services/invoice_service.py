@@ -27,7 +27,6 @@ class InvoiceService:
         original_file_path = Path() / (f"uploads/{user.id}/categorie/{invoice_create_dto.vendor}/{invoice_create_dto.file.filename}")
         # File used for processing and it will be altered during the process and deleted after
         copy_file_path = Path() / (f"uploads/{user.id}/categorie/{invoice_create_dto.vendor}/copy_{invoice_create_dto.file.filename}")
-        print(original_file_path)
         file_type = invoice_create_dto.file.content_type
         content = await invoice_create_dto.file.read()
         
@@ -41,8 +40,6 @@ class InvoiceService:
             
         # extract the content of the file and determine the category
         category, content = detect_category(str(original_file_path), str(copy_file_path), file_type)
-        
-        print(category, content)
             
         # delete the copy file
         os.remove(copy_file_path)

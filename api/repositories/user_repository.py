@@ -75,8 +75,6 @@ class UserRepository:
         '''
         Get a user by email.
         '''
-        print("Test")
-        print(email)
         result = await db.execute(select(User).filter(User.email == email))
         user = result.scalars().first()
         return UserDTO.from_user(user)

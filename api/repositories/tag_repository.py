@@ -4,7 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from models.tag import Tag
 from dtos.tag_dtos import TagCreateDTO, TagDTO
-
+from models.invoice import invoice_tags
+from sqlalchemy import insert
 
 class TagRepository:
     '''
@@ -23,6 +24,15 @@ class TagRepository:
 
         return TagDTO.from_tag(new_tag)
     
+    @staticmethod
+    async def add_invoice_tag(tag_id: int, invoice_id: int, db: AsyncSession) -> None:
+        '''
+        Add a tag to an invoice.
+        '''
+        stmt = insert(invoice_tags).values(invoice_id=invoice_id, tag_id=tag_id)
+        await db.execute(stmt)
+        await db.commit()
+
 
     @staticmethod
     async def get_all(db: AsyncSession) -> List[TagDTO]:

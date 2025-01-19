@@ -38,13 +38,11 @@ class AuthService:
             )
 
             email = payload.get("sub")
-            print("Email: " + email)
             if email is None:
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
                 )
             user = await UserRepository.get_by_email(email, db)
-            print(user)
             return user
 
         except Exception as e:
